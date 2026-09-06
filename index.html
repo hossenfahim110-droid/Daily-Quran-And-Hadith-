@@ -329,3 +329,351 @@
     </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Quran And Hadith - Hisnul Muslim</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Mina:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Mina', sans-serif; }
+        .arabic-text { font-family: 'Amiri', serif; }
+        .active-cat { background-color: #047857; color: #ffffff; border-color: #047857; }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 pb-12">
+
+    <!-- Header -->
+    <header class="bg-emerald-800 text-white text-center py-6 shadow-lg border-b-4 border-amber-400">
+        <h1 class="text-2xl sm:text-3xl font-extrabold tracking-wide uppercase text-amber-300">Daily Quran And Hadith</h1>
+        <p class="text-xs text-emerald-100 mt-1 font-medium">হিসনুল মুসলিমের সকল মাসনুন দোয়া ও জিকির (রেফারেন্সসহ)</p>
+    </header>
+
+    <main class="max-w-2xl mx-auto p-4 space-y-6">
+
+        <!-- Hisnul Muslim Section -->
+        <section class="bg-white rounded-xl p-5 shadow-sm border border-slate-200 space-y-4">
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-2 border-b pb-3">
+                <div>
+                    <h2 class="text-lg font-bold text-emerald-800 flex items-center gap-1.5">
+                        <span>🛡️</span> হিসনুল মুসলিমের দোয়া ভাণ্ডার
+                    </h2>
+                    <p id="total-count-display" class="text-[11px] text-slate-500">ক্যাটাগরি ভিত্তিক দোয়া</p>
+                </div>
+                <input type="text" id="search-dua" onkeyup="filterDuas()" placeholder="যেকোনো দোয়া বা বিষয় খুঁজুন..." class="w-full sm:w-auto p-2 text-xs border border-slate-300 rounded-lg focus:outline-none focus:border-emerald-600">
+            </div>
+
+            <!-- Categories -->
+            <div class="flex flex-wrap gap-2 text-xs font-bold" id="dua-categories">
+                <button onclick="filterCategory('all', event)" class="cat-btn active-cat px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-emerald-700 hover:text-white transition">সব দোয়া</button>
+                <button onclick="filterCategory('morning_evening', event)" class="cat-btn px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-emerald-700 hover:text-white transition">🌅 সকাল-সন্ধ্যা</button>
+                <button onclick="filterCategory('sleep', event)" class="cat-btn px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-emerald-700 hover:text-white transition">😴 ঘুম ও জাগরণ</button>
+                <button onclick="filterCategory('clothes', event)" class="cat-btn px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-emerald-700 hover:text-white transition">👕 পোশাক ও সাজসজ্জা</button>
+                <button onclick="filterCategory('toilet_wudu', event)" class="cat-btn px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-emerald-700 hover:text-white transition">🚾 টয়লেট ও ওজু</button>
+                <button onclick="filterCategory('home_mosque', event)" class="cat-btn px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-emerald-700 hover:text-white transition">🕌 ঘর ও মসজিদ</button>
+                <button onclick="filterCategory('namaz', event)" class="cat-btn px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-emerald-700 hover:text-white transition">🕋 আজান ও সালাত</button>
+                <button onclick="filterCategory('protection', event)" class="cat-btn px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-emerald-700 hover:text-white transition">🛡️ বিপদ, ঋণ ও দুশ্চিন্তা</button>
+                <button onclick="filterCategory('food', event)" class="cat-btn px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-emerald-700 hover:text-white transition">🍽️ খাবার ও পানীয়</button>
+                <button onclick="filterCategory('travel', event)" class="cat-btn px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-emerald-700 hover:text-white transition">🚗 সফর ও যানবাহন</button>
+                <button onclick="filterCategory('repentance', event)" class="cat-btn px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-emerald-700 hover:text-white transition">🤍 তাওবা ও ক্ষমার দোয়া</button>
+            </div>
+
+            <!-- Dua List Box -->
+            <div id="dua-container" class="space-y-4 max-h-[550px] overflow-y-auto pr-1">
+                <!-- Dynamic Duas -->
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // Offline Complete Local Data Base
+        const hisnulDatabase = [
+            // ১. সকাল-সন্ধ্যা
+            {
+                id: 1,
+                cat: 'morning_evening',
+                title: 'সকল ক্ষতি থেকে হিফাজতের দোয়া',
+                arabic: 'بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ',
+                pron: 'বিসমিল্লাহিল্লাজি লা ইয়াদুররু মা‘আসমিহি শাইউন ফিল আরদি ওয়া লা ফিস সামায়ি ওয়া হুওয়াস সামিউল আলিম।',
+                bn: 'আল্লাহর নামে শুরু করছি, যাঁর নামের বরকতে আসমান ও জমিনের কোনো কিছু ক্ষতি করতে পারে না। তিনি সর্বশ্রোতা, সর্বজ্ঞ।',
+                benefit: 'সকাল ও সন্ধ্যায় ৩ বার পাঠ করলে কোনো অনিষ্ট ক্ষতি করতে পারে না।',
+                ref: 'আবু দাউদ: ৫০৮৮, তিরমিজী: ৩৩৮৮ (সহীহ)'
+            },
+            {
+                id: 2,
+                cat: 'morning_evening',
+                title: 'সায়্যিদুল ইস্তিগফার (সর্বশ্রেষ্ঠ তাওবা)',
+                arabic: 'اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ...',
+                pron: 'আল্লাহুম্মা আন্তা রাব্বী লা ইলাহা ইল্লা আন্তা, খালাক্বতানী ওয়া আনা ‘আব্দুকা, ওয়া আনা ‘আলা ‘আহদিকা ওয়া ওয়া‘দিকা মাসতাত্বা‘তু...',
+                bn: 'হে আল্লাহ! আপনি আমার রব, আপনি ছাড়া কোনো উপাস্য নেই। আপনি আমাকে সৃষ্টি করেছেন এবং আমি আপনার বান্দা...',
+                benefit: 'দিনে বা রাতে পাঠ করে মারা গেলে সে জান্নাতী হবে।',
+                ref: 'সহীহ বুখারী: ৬৩০৬'
+            },
+            {
+                id: 3,
+                cat: 'morning_evening',
+                title: 'জাহান্নাম থেকে মুক্তির দোয়া',
+                arabic: 'اللَّهُمَّ أَجِرْنِي مِنَ النَّارِ',
+                pron: 'আল্লাহুম্মা আজিরনী মিনান নার।',
+                bn: 'হে আল্লাহ! আমাকে জাহান্নামের আগুন থেকে রক্ষা করুন।',
+                benefit: 'ফজর ও মাগরিবের পর ৭ বার পাঠ করার বিধান।',
+                ref: 'আবু দাউদ: ৫০৭৯ (হাসান)'
+            },
+
+            // ২. ঘুম ও জাগরণ
+            {
+                id: 4,
+                cat: 'sleep',
+                title: 'ঘুম থেকে জাগার দোয়া',
+                arabic: 'الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ',
+                pron: 'আলহামদু লিল্লাহিল্লাজি এহইয়ানা বা‘দা মা আমাতানা ওয়া ইলাইহিন নুশূর।',
+                bn: 'সব প্রশংসা আল্লাহর, যিনি আমাদের মৃত্যুর (ঘুমের) পর জীবিত করলেন এবং তাঁর দিকেই সবার প্রত্যাবর্তন।',
+                benefit: 'ঘুম ভাঙার সাথে সাথে পঠিত মাসনুন দোয়া।',
+                ref: 'সহীহ বুখারী: ৬৩১২, সহীহ মুসলিম: ২৭১১'
+            },
+            {
+                id: 5,
+                cat: 'sleep',
+                title: 'ঘুমানোর আগের দোয়া',
+                arabic: 'بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا',
+                pron: 'বিসমিকা আল্লা-হুম্মা আমূতু ওয়া এহয়া।',
+                bn: 'হে আল্লাহ! আপনার নাম নিয়েই আমি মৃত্যুবরণ (ঘুমাই) করছি এবং জীবিত (জাগ্রত) হচ্ছি।',
+                benefit: 'বিছানায় শোয়ার পর পড়তে হয়।',
+                ref: 'সহীহ বুখারী: ৬৩১৪'
+            },
+            {
+                id: 6,
+                cat: 'sleep',
+                title: 'ঘুমে ভয় পেলে বা দুঃস্বপ্ন দেখলে',
+                arabic: 'أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ غَضَبِهِ وَعِقَابِهِ وَشَرِّ عِبَادِهِ',
+                pron: 'আ‘ঊজু বিকালিমাাতিল্লাহিত তাাাম্মাাতি মিন গাদাবিヒー ওয়া ‘ইক্বাাবিヒー ওয়া শাররি ‘ইবাাদিহ্।',
+                bn: 'আমি আল্লাহর পূর্ণাঙ্গ কালেমাসমূহের অসীলায় তাঁর গজব, তাঁর শাস্তি ও তাঁর বান্দাদের অনিষ্ট থেকে আশ্রয় চাই।',
+                benefit: 'দুঃস্বপ্ন দেখলে বাঁদিকে ৩ বার থুথু ফেলে অন্য কাতে শুবেন।',
+                ref: 'আবু দাউদ: ৩৮৯৩, তিরমিজী: ৩৫২৮'
+            },
+
+            // ৩. পোশাক ও সাজসজ্জা
+            {
+                id: 7,
+                cat: 'clothes',
+                title: 'নতুন পোশাক পরিধানের দোয়া',
+                arabic: 'اللَّهُمَّ لَكَ الْحَمْدُ أَنْتَ كَسَوْتَنِيهِ، أَسْأَلُكَ مِنْ خَيْرِهِ وَخَيْرِ مَا صُنِعَ لَهُ',
+                pron: 'আল্লাহুম্মা লাকাল হামদু আন্তা কাসাওতানীহি, আসআলুকা মিন খাইরিহি ওয়া খাইরি মা সুনি‘আ লাহু।',
+                bn: 'হে আল্লাহ! সমস্ত প্রশংসা আপনার, আপনিই আমাকে এটি পরিধান করিয়েছেন। আমি আপনার কাছে এর কল্যাণ চাই।',
+                benefit: 'নতুন জামাকাপড় পরার সময় সুন্নাত।',
+                ref: 'আবু দাউদ: ৪০২০, তিরমিজী: ১৭৬৭'
+            },
+            {
+                id: 8,
+                cat: 'clothes',
+                title: 'পোশাক খোলার সময়ের দোয়া',
+                arabic: 'بِسْمِ اللَّهِ',
+                pron: 'বিসমিল্লাহ।',
+                bn: 'আল্লাহর নামে (শুরু করছি)।',
+                benefit: 'জিনদের নজর থেকে গোপন থাকার মাধ্যম।',
+                ref: 'তিরমিজী: ৬০৬ (সহীহ)'
+            },
+
+            // ৪. টয়লেট ও ওজু
+            {
+                id: 9,
+                cat: 'toilet_wudu',
+                title: 'টয়লেটে প্রবেশের দোয়া',
+                arabic: 'اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْخُبُثِ وَالْخَبَائِثِ',
+                pron: 'আল্লাহুম্মা ইন্নি আ‘ঊজু বিকার মিনাল খুবুসি ওয়াল খাবা-ইছ।',
+                bn: 'হে আল্লাহ! আমি আপনার কাছে পুরুষ ও নারী শয়তানের অনিষ্ট থেকে আশ্রয় চাচ্ছি।',
+                benefit: 'বাম পা দিয়ে টয়লেটে প্রবেশের আগে পাঠ্য।',
+                ref: 'সহীহ বুখারী: ১৪২, সহীহ মুসলিম: ৩৭৫'
+            },
+            {
+                id: 10,
+                cat: 'toilet_wudu',
+                title: 'টয়লেট থেকে বের হওয়ার দোয়া',
+                arabic: 'غُفْرَانَكَ',
+                pron: 'গুফরা-নাকা।',
+                bn: 'হে আল্লাহ! আমি আপনার ক্ষমা প্রার্থনা করছি।',
+                benefit: 'ডান পা দিয়ে বের হওয়ার পর পড়া সুন্নাত।',
+                ref: 'আবু দাউদ: ৩০, তিরমিজী: ৭'
+            },
+            {
+                id: 11,
+                cat: 'toilet_wudu',
+                title: 'ওজু শেষের দোয়া',
+                arabic: 'أَشْهَدُ أَنْ لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ',
+                pron: 'আশহাদু আল-লা ইলাহা ইল্লাল্লাহু ওয়াহ্দাহু লা শারীকা লাহু, ওয়া আশহাদু আন্না মুহাম্মাদান ‘আব্দুহু ওয়া রাসূলুহু।',
+                bn: 'আমি সাক্ষ্য দিচ্ছি যে, এক আল্লাহ ছাড়া কোনো উপাস্য নেই এবং মুহাম্মদ (ﷺ) তাঁর বান্দা ও রাসূল।',
+                benefit: 'পাঠকারীর জন্য জান্নাতের ৮টি দরজাই খুলে দেওয়া হয়।',
+                ref: 'সহীহ মুসলিম: ২৩৪'
+            },
+
+            // ৫. ঘর ও মসজিদ
+            {
+                id: 12,
+                cat: 'home_mosque',
+                title: 'ঘর থেকে বের হওয়ার দোয়া',
+                arabic: 'بِسْمِ اللَّهِ ، تَوَكَّلْتُ عَلَى اللَّهِ ، وَلا حَوْلَ وَلا قُوَّةَ إِلاَّ بِاللَّهِ',
+                pron: 'বিসমিল্লাহি তাওয়াক্কালতু ‘আলাল্লাহি, ওয়া লা হাওলা ওয়া লা ক্বুওয়াতা ইল্লা বিল্লাহ।',
+                bn: 'আল্লাহর নামে বের হচ্ছি, আল্লাহর ওপরই ভরসা করলাম। আল্লাহর সাহায্য ছাড়া গুনাহ থেকে বাঁচার উপায় নেই।',
+                benefit: 'শয়তানের সমস্ত চক্রান্ত থেকে নিরাপদে থাকা যায়।',
+                ref: 'আবু দাউদ: ৫০৯৫'
+            },
+            {
+                id: 13,
+                cat: 'home_mosque',
+                title: 'মসজিদে প্রবেশের দোয়া',
+                arabic: 'اللَّهُمَّ افْتَحْ لِي أَبْوَابَ رَحْمَتِكَ',
+                pron: 'আল্লাহুম্মাফতাহ্‌ লী আবওয়াবা রাহমাতিকা।',
+                bn: 'হে আল্লাহ! আমার জন্য আপনার রহমতের দরজাগুলো খুলে দিন।',
+                benefit: 'ডান পা দিয়ে প্রবেশের সময় দরূদ পড়ার পর বলবেন।',
+                ref: 'সহীহ মুসলিম: ৭১৩'
+            },
+
+            // ৬. আজান ও সালাত
+            {
+                id: 14,
+                cat: 'namaz',
+                title: 'আজানের পরের দোয়া',
+                arabic: 'اللَّهُمَّ رَبَّ هَذِهِ الدَّعْوَةِ التَّامَّةِ وَالصَّلاَةِ الْقَائِمَةِ آتِ مُحَمَّدًا الْوَسِيلَةَ وَالْفَضِيلَةَ...',
+                pron: 'আল্লাহুম্মা রাব্বা হাজিহিদ দা‘ওয়াতিত তাম্মাহ, ওয়াস সালাতিল ক্বায়িমাহ, আতি মুহাম্মাদানিল ওয়াসীলাতা ওয়াল ফাদীলাহ...',
+                bn: 'হে আল্লাহ! এই পরিপূর্ণ আহ্বান এবং প্রতিষ্ঠিত সালাতের রব! মুহাম্মদ (ﷺ)-কে ওয়াসিলা ও সর্বোচ্চ মর্যাদা দান করুন...',
+                benefit: 'কিয়ামতের দিন নবীজী (ﷺ)-এর শাফায়াত ওয়াজিব হয়।',
+                ref: 'সহীহ বুখারী: ৪৭১৪'
+            },
+            {
+                id: 15,
+                cat: 'namaz',
+                title: 'তাশাহহুদ (আত্তাহিয়্যাতু)',
+                arabic: 'التَّحِيَّاتُ لِلَّهِ وَالصَّلَوَاتُ وَالطَّيِّبَاتُ ، السَّلاَمُ عَلَيْكَ أَيُّهَا النَّبِيُّ وَرَحْمَةُ اللَّهِ وَبَرَكَاتُهُ...',
+                pron: 'আত্তাহিয়্যাতু লিল্লাহি ওয়াস সালাওয়াতু ওয়াত তাইয়্যিবাতু, আসসালামু ‘আলাইকা আইয়ুহান নাবিয়্যু ওয়া রাহমাতুল্লাহি ওয়া বারাকাতুহু...',
+                bn: 'যাবতীয় মৌখিক, শারীরিক ও আর্থিক ইবাদত আল্লাহর জন্য। হে নবী! আপনার প্রতি সালাম, আল্লাহর রহমত ও বরকত নাজিল হোক...',
+                benefit: 'সালাতের প্রতি বৈঠকে ওয়াজিব আমল।',
+                ref: 'সহীহ বুখারী: ১২৩১, সহীহ মুসলিম: ৪০২'
+            },
+
+            // ৭. বিপদ, ঋণ ও দুশ্চিন্তা
+            {
+                id: 16,
+                cat: 'protection',
+                title: 'বিপদ মুক্তির দোয়া (দোয়া ইউনুস)',
+                arabic: 'لَا إِلَٰهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ',
+                pron: 'লা ইলাহা ইল্লা আন্তা সুবহানাকা ইন্নি কুন্তু মিনাজ জ্বালিমীন।',
+                bn: 'আপনি ছাড়া কোনো উপাস্য নেই, আপনি মহা পবিত্র। নিশ্চয়ই আমি অপরাধীদের অন্তর্ভুক্ত।',
+                benefit: 'যেকোনো বিপদে এ দোয়া পাঠ করলে আল্লাহ উদ্ধার করেন।',
+                ref: 'তিরমিজী: ৩৫০৫ (সহীহ)'
+            },
+            {
+                id: 17,
+                cat: 'protection',
+                title: 'ঋণ মুক্তির দোয়া',
+                arabic: 'اللَّهُمَّ اكْفِنِي بِحَلَالِكَ عَنْ حَرَامِكَ وَأَغْنِنِي بِفَضْلِكَ عَمَّنْ سِوَاكَ',
+                pron: 'আল্লাহুম্মাকফিনী বিহালালিকা ‘আন হারামিকা ওয়া আগনিনী বিফাদলিকা ‘আম্মান সিওয়াক।',
+                bn: 'হে আল্লাহ! আপনার হালাল দ্বারা আমাকে সন্তুষ্ট রাখুন এবং আপনার অনুগ্রহে অন্যদের মুখাপেক্ষীহীন করুন।',
+                benefit: 'পাহাড়সম ঋণ থাকলেও আদায়ের পথ খুলে যায়।',
+                ref: 'তিরমিজী: ৩৫৬৩'
+            },
+
+            // ৮. খাবার ও পানীয়
+            {
+                id: 18,
+                cat: 'food',
+                title: 'খাবারের শুরুতে ও শেষে',
+                arabic: 'بِسْمِ اللَّهِ (শুরুতে) | الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنِي هَذَا وَرَزَقَنِيهِ (শেষে)',
+                pron: 'শুরুতে: বিসমিল্লাহ। শেষে: আলহামদু লিল্লাহিল্লাজি আত‘আমানী হাজা ওয়া রাজাক্বানীহি...',
+                bn: 'শুরুতে: আল্লাহর নামে। শেষে: সমস্ত প্রশংসা আল্লাহর, যিনি আমাকে খাবার খাওয়ালেন ও রিজিক দিলেন।',
+                benefit: 'খাবারে বরকত হয় এবং পূর্বের গুনাহ মাফ হয়।',
+                ref: 'আবু দাউদ: ৩৮৫১, তিরমিজী: ৩৪৫৮'
+            },
+
+            // ৯. সফর ও যানবাহন
+            {
+                id: 19,
+                cat: 'travel',
+                title: 'যানবাহনে আরোহণের দোয়া',
+                arabic: 'سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ وَإِنَّا إِلَى رَبِّنَا لَمُنْقَلِبُونَ',
+                pron: 'সুবহানাল্লাজি সাখখারা লানা হাজা ওয়া মা কুন্না লাহু মুক্বরিনীন, ওয়া ইন্না ইলা রাব্বিনা লা মুনক্বালিবূন।',
+                bn: 'পবিত্র সেই সত্তা যিনি এগুলোকে আমাদের নিয়ন্ত্রণে এনে দিয়েছেন, তা না হলে আমরা একে বশে আনতে পারতাম না।',
+                benefit: 'সফরের নিরাপত্তা লাভ হয়।',
+                ref: 'সূরা যুখরুফ: ১৩-১৪; আবু দাউদ: ২৬০২'
+            },
+
+            // ১০. তাওবা
+            {
+                id: 20,
+                cat: 'repentance',
+                title: 'ইস্তিগফার (ক্ষমা প্রার্থনা)',
+                arabic: 'أَسْتَغْفِرُ اللَّهَ الَّذِي لاَ إِلَهَ إِلاَّ هُوَ الْحَيُّ الْقَيُّومُ وَأَتُوبُ إِلَيْهِ',
+                pron: 'আস্তাগফিরুল্লাহাল্লাজি লা ইলাহা ইল্লা হুওয়াল হাইয়্যুল ক্বাইয়্যূমু ওয়া অতূবু ইলাইহি।',
+                bn: 'আমি আল্লাহর কাছে ক্ষমা চাই, যিনি ছাড়া কোনো উপাস্য নেই, যিনি চিরঞ্জীব ও সার্বক্ষণিক রক্ষক এবং তাঁর দিকেই তাওবা করি।',
+                benefit: 'যুদ্ধের ময়দান থেকে পালালেও গুনাহ মাফ হয়।',
+                ref: 'আবু দাউদ: ১৫১৭, তিরমিজী: ৩৫৭৭'
+            }
+        ];
+
+        let selectedCategory = 'all';
+
+        function renderDuas(duas) {
+            const container = document.getElementById('dua-container');
+            document.getElementById('total-count-display').innerText = `প্রদর্শিত দোয়া: ${duas.length} টি`;
+
+            if (duas.length === 0) {
+                container.innerHTML = `<p class="text-center text-slate-400 py-6">কোনো দোয়া পাওয়া যায়নি।</p>`;
+                return;
+            }
+
+            let html = '';
+            duas.forEach((d) => {
+                html += `
+                    <div class="bg-emerald-50/50 border border-emerald-200 rounded-xl p-4 space-y-2.5">
+                        <div class="flex justify-between items-center border-b border-emerald-200 pb-2">
+                            <h3 class="font-bold text-emerald-900 text-sm">📌 ${d.title}</h3>
+                            <button onclick="copyDua('${d.title}', '${d.arabic}', '${d.pron}', '${d.bn}', '${d.ref}')" class="text-[10px] bg-emerald-700 text-white px-2.5 py-1 rounded-md font-bold hover:bg-emerald-800 transition">📋 কপি করুন</button>
+                        </div>
+                        <p class="arabic-text text-xl text-right text-emerald-950 font-bold leading-loose py-1">${d.arabic}</p>
+                        <p class="text-xs text-slate-700 font-semibold"><b>উচ্চারণ:</b> ${d.pron}</p>
+                        <p class="text-xs text-slate-600"><b>অর্থ:</b> ${d.bn}</p>
+                        ${d.benefit ? `<div class="bg-amber-100/80 text-amber-900 text-[11px] p-2 rounded-lg font-medium">💡 <b>ফজিলত:</b> ${d.benefit}</div>` : ''}
+                        <div class="text-[10px] text-slate-500 font-bold border-t border-emerald-100 pt-1 text-right">
+                            📖 <b>রেফারেন্স:</b> ${d.ref}
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function filterCategory(cat, event) {
+            selectedCategory = cat;
+            document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.remove('active-cat'));
+            if(event) event.target.classList.add('active-cat');
+
+            if (cat === 'all') {
+                renderDuas(hisnulDatabase);
+            } else {
+                const filtered = hisnulDatabase.filter(d => d.cat === cat);
+                renderDuas(filtered);
+            }
+        }
+
+        function filterDuas() {
+            const query = document.getElementById('search-dua').value.toLowerCase();
+            const filtered = hisnulDatabase.filter(d => 
+                (selectedCategory === 'all' || d.cat === selectedCategory) &&
+                (d.title.toLowerCase().includes(query) || d.pron.toLowerCase().includes(query) || d.bn.toLowerCase().includes(query) || d.ref.toLowerCase().includes(query))
+            );
+            renderDuas(filtered);
+        }
+
+        function copyDua(title, arabic, pron, trans, ref) {
+            const textToCopy = `${title}\n\nআরবি: ${arabic}\nউচ্চারণ: ${pron}\nঅর্থ: ${trans}\n\nরেফারেন্স: ${ref}\n— Daily Quran And Hadith`;
+            navigator.clipboard.writeText(textToCopy);
+            alert('দোয়াটি সফলভাবে কপি করা হয়েছে!');
+        }
+
+        // Initial Load
+        renderDuas(hisnulDatabase);
+    </script>
+</body>
+</html>

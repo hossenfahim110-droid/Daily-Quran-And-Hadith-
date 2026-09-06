@@ -114,4 +114,218 @@
         updateHadith();
         setInterval(updateHadith, 8000);
     </script>
-</body>fet
+</body>
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Quran And Hadith</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Mina:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Mina', sans-serif; }
+        .arabic-text { font-family: 'Amiri', serif; }
+        .active-ayah { background-color: #ecfdf5; border-left: 4px solid #059669; }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 pb-12">
+
+    <!-- Website Header -->
+    <header class="bg-emerald-800 text-white text-center py-6 shadow-lg border-b-4 border-amber-400">
+        <h1 class="text-2xl sm:text-3xl font-extrabold tracking-wide uppercase text-amber-300">Daily Quran And Hadith</h1>
+        <p class="text-xs text-emerald-100 mt-1 font-medium">ইসলামিক শিক্ষা, আল-কুরআন, সহীহ হাদীস ও দৈনন্দিন আমল</p>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-2xl mx-auto p-4 space-y-5">
+
+        <!-- Reciter Selection Card -->
+        <section class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
+            <label for="reciter-select" class="block text-xs font-bold text-emerald-900 mb-2">🎙️ ক্বারী নির্বাচন করুন (১৭ জন ক্বারী):</label>
+            <select id="reciter-select" onchange="changeReciter()" class="w-full p-2.5 text-xs font-semibold bg-emerald-50 border border-emerald-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-600">
+                <option value="https://everyayah.com/data/Yasser_Ad-Dussary_128kbps/">১. শেখ ইয়াসিন আর দোসারী (Yasser Al-Dosari)</option>
+                <option value="https://everyayah.com/data/Abdul_Basit_Murattal_192kbps/">২. আবদুর রহমান আস-সুদাইস (Abdur-Rahman As-Sudais)</option>
+                <option value="https://everyayah.com/data/MaherAlMuaiqly128kbps/">৩. মাহের আল মুয়াক্লি (Maher Al-Muaiqly)</option>
+                <option value="https://everyayah.com/data/Bandar_Balila_128kbps/">৪. বান্দার বালিলা (Bandar Balila)</option>
+                <option value="https://everyayah.com/data/Saood_ash-Shuraym_128kbps/">৫. শেখ শুরাইম (Saood ash-Shuraym)</option>
+                <option value="https://everyayah.com/data/Waleed_Rashed_Al-Shamsan_128kbps/">৬. ওয়ালিদ বিন শামসান (Waleed Al-Shamsan)</option>
+                <option value="https://everyayah.com/data/Badr_Al-Turki_128kbps/">৭. বদর আল তুরকি (Badr Al-Turki)</option>
+                <option value="https://everyayah.com/data/Abdullaah_3bas_Ahmad_Al-Juhany_128kbps/">৮. শেখ জুহানী (Abdullah Al-Juhany)</option>
+                <option value="https://everyayah.com/data/AbdulSamad_64kbps_QuranExplorer.Com/">৯. আব্দুল বাসেত আব্দুস সামাদ (Abdul Basit)</option>
+                <option value="https://everyayah.com/data/Alafasy_128kbps/">১০. মিশারি রশীদ আল-আফাসী (Mishary Alafasy)</option>
+                <option value="https://everyayah.com/data/Hudhaify_128kbps/">১১. আলী আল হুজাইফি (Ali Al-Hudhaify)</option>
+                <option value="https://everyayah.com/data/Minshawy_Murattal_128kbps/">১২. শেখ মোহাম্মদ সিদ্দিক আল মিনশাবি (Al-Minshawi)</option>
+                <option value="https://everyayah.com/data/Husary_128kbps/">১৩. খলিল আল হুসাইরি (Mahmoud Khalil Al-Husary)</option>
+                <option value="https://everyayah.com/data/Nasser_Alqatami_128kbps/">১৪. নাসের আল কাতামি (Nasser Al-Qatami)</option>
+                <option value="https://everyayah.com/data/Salah_Al_Budair_128kbps/">১৫. সালেহ আল বুদাইর (Salah Al-Budair)</option>
+                <option value="https://everyayah.com/data/Ali_Jaber_64kbps/">১৬. শেখ আবু তালেব (Sheikh Abu Taleb / Ali Jaber)</option>
+                <option value="https://everyayah.com/data/Muhammad_Luhaydan_128kbps/">১৭. শেখ মোহাম্মদ আল লুহাইদান (Muhammad Al-Luhaidan)</option>
+            </select>
+        </section>
+
+        <!-- Surah Player & Reader Section (Hidden by Default) -->
+        <section id="surah-player-box" class="hidden bg-white rounded-xl p-4 shadow-lg border-2 border-emerald-600 sticky top-2 z-40">
+            <div class="flex justify-between items-center pb-2 border-b mb-3">
+                <div>
+                    <h2 id="surah-title-display" class="text-base font-bold text-emerald-900">সূরা নাম</h2>
+                    <p id="surah-info-display" class="text-[11px] text-slate-500"></p>
+                </div>
+                <button onclick="closeSurahPlayer()" class="text-xs bg-red-500 text-white px-2.5 py-1 rounded-md font-bold hover:bg-red-600">বন্ধ করুন</button>
+            </div>
+
+            <!-- Audio Control Player -->
+            <audio id="global-audio-player" class="w-full mb-3 h-10" controls></audio>
+
+            <!-- Ayah Container -->
+            <div id="ayah-container" class="space-y-3 max-h-80 overflow-y-auto pr-1 text-xs">
+                <p class="text-center text-slate-400 py-4">আয়াত লোড হচ্ছে...</p>
+            </div>
+        </section>
+
+        <!-- Quran 114 Surah List Section -->
+        <section class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
+            <div class="flex flex-col sm:flex-row justify-between items-center mb-3 gap-2">
+                <h2 class="text-base font-bold text-emerald-800">📖 আল-কুরআন (১১৪ টি সূরা)</h2>
+                <input type="text" id="search-surah" onkeyup="filterSurahList()" placeholder="সূরার নাম বা নম্বর খুঁজুন..." class="w-full sm:w-auto p-2 text-xs border border-slate-300 rounded-lg focus:outline-none focus:border-emerald-600">
+            </div>
+
+            <ul id="surah-list-ul" class="space-y-2 max-h-96 overflow-y-auto pr-1 text-xs">
+                <li class="text-center text-slate-400 py-4">সূরা তালিকা লোড হচ্ছে...</li>
+            </ul>
+        </section>
+
+    </main>
+
+    <!-- JavaScript Engine -->
+    <script>
+        let allSurahs = [];
+        let currentAyahsData = [];
+        let currentAyahIndex = 0;
+        let activeSurahNumber = null;
+
+        const audioPlayer = document.getElementById('global-audio-player');
+
+        // Fetch 114 Surahs Information from Al Quran Cloud API
+        fetch('https://api.alquran.cloud/v1/surah')
+            .then(res => res.json())
+            .then(data => {
+                allSurahs = data.data;
+                renderSurahList(allSurahs);
+            });
+
+        function renderSurahList(surahs) {
+            let html = '';
+            surahs.forEach(s => {
+                const typeBn = s.revelationType === 'Meccan' ? 'মাক্কী' : 'মাদানী';
+                html += `
+                    <li onclick="loadSurah(${s.number})" class="p-3 border border-slate-100 rounded-lg flex justify-between items-center bg-slate-50 hover:bg-emerald-50 hover:border-emerald-300 cursor-pointer transition">
+                        <div>
+                            <span class="font-bold text-slate-800">${s.number}. ${s.englishName}</span>
+                            <span class="text-[11px] text-slate-500 block">${s.englishNameTranslation} • ${typeBn} • ${s.numberOfAyahs} টি আয়াত</span>
+                        </div>
+                        <span class="arabic-text text-base font-bold text-emerald-800 bg-emerald-100/60 px-2.5 py-1 rounded-md">${s.name}</span>
+                    </li>
+                `;
+            });
+            document.getElementById('surah-list-ul').innerHTML = html;
+        }
+
+        function filterSurahList() {
+            const query = document.getElementById('search-surah').value.toLowerCase();
+            const filtered = allSurahs.filter(s => 
+                s.englishName.toLowerCase().includes(query) || 
+                s.number.toString().includes(query) ||
+                s.englishNameTranslation.toLowerCase().includes(query)
+            );
+            renderSurahList(filtered);
+        }
+
+        function loadSurah(surahNumber) {
+            activeSurahNumber = surahNumber;
+            const surah = allSurahs.find(s => s.number === surahNumber);
+            const playerBox = document.getElementById('surah-player-box');
+            
+            playerBox.classList.remove('hidden');
+            document.getElementById('surah-title-display').innerText = `${surah.number}. ${surah.englishName} (${surah.name})`;
+            document.getElementById('surah-info-display').innerText = `অর্থ: ${surah.englishNameTranslation} | অবতীর্ণ: ${surah.revelationType === 'Meccan' ? 'মাক্কী' : 'মাদানী'} | আয়াত: ${surah.numberOfAyahs}`;
+            document.getElementById('ayah-container').innerHTML = '<p class="text-center text-slate-400 py-4">আয়াত ও অর্থ লোড হচ্ছে...</p>';
+
+            // Fetch Arabic Text & Bangla Translation Together
+            Promise.all([
+                fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}/quran-uthmani`).then(r => r.json()),
+                fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}/bn.bengali`).then(r => r.json())
+            ]).then(([arabicRes, bnRes]) => {
+                const arabicAyahs = arabicRes.data.ayahs;
+                const bnAyahs = bnRes.data.ayahs;
+
+                currentAyahsData = arabicAyahs.map((a, i) => ({
+                    numberInSurah: a.numberInSurah,
+                    arabic: a.text,
+                    bangla: bnAyahs[i].text
+                }));
+
+                renderAyahs();
+                playAyah(0);
+            });
+        }
+
+        function renderAyahs() {
+            let html = '';
+            currentAyahsData.forEach((a, i) => {
+                html += `
+                    <div id="ayah-box-${i}" onclick="playAyah(${i})" class="p-3 border-b border-slate-100 rounded-lg space-y-1.5 cursor-pointer hover:bg-slate-50 transition">
+                        <div class="flex justify-between items-start gap-2">
+                            <span class="text-[10px] bg-emerald-700 text-white px-2 py-0.5 rounded-full font-bold">${a.numberInSurah}</span>
+                            <p class="arabic-text text-lg text-right text-emerald-950 font-bold leading-loose flex-1">${a.text || a.arabic}</p>
+                        </div>
+                        <p class="text-slate-600 font-medium text-xs border-t border-slate-100 pt-1"><b>অর্থ:</b> ${a.bangla}</p>
+                    </div>
+                `;
+            });
+            document.getElementById('ayah-container').innerHTML = html;
+        }
+
+        function playAyah(index) {
+            if (index < 0 || index >= currentAyahsData.length) return;
+
+            currentAyahIndex = index;
+            const reciterUrl = document.getElementById('reciter-select').value;
+            
+            // Format Surah and Ayah Number for EveryAyah API (e.g. 001001.mp3)
+            const formattedSurah = String(activeSurahNumber).padStart(3, '0');
+            const formattedAyah = String(currentAyahsData[index].numberInSurah).padStart(3, '0');
+            
+            audioPlayer.src = `${reciterUrl}${formattedSurah}${formattedAyah}.mp3`;
+            audioPlayer.play();
+
+            // Highlight & Auto-slide to the current playing Ayah
+            document.querySelectorAll('[id^="ayah-box-"]').forEach(el => el.classList.remove('active-ayah'));
+            const activeElement = document.getElementById(`ayah-box-${index}`);
+            if (activeElement) {
+                activeElement.classList.add('active-ayah');
+                activeElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+
+        // Auto Play Next Ayah When Audio Ends
+        audioPlayer.onended = function() {
+            if (currentAyahIndex + 1 < currentAyahsData.length) {
+                playAyah(currentAyahIndex + 1);
+            }
+        };
+
+        function changeReciter() {
+            if (activeSurahNumber !== null) {
+                playAyah(currentAyahIndex);
+            }
+        }
+
+        function closeSurahPlayer() {
+            document.getElementById('surah-player-box').classList.add('hidden');
+            audioPlayer.pause();
+        }
+    </script>
+</body>
+</html>

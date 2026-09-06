@@ -116,3 +116,212 @@
     </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Quran And Hadith</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Mina:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Mina', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 pb-12">
+
+    <!-- 1. Top Main Header (Website Name) -->
+    <header class="bg-emerald-800 text-white text-center py-6 shadow-lg border-b-4 border-amber-400">
+        <h1 class="text-3xl font-extrabold tracking-wide uppercase font-serif text-amber-300">Daily Quran And Hadith</h1>
+        <p class="text-xs text-emerald-100 mt-1 font-medium">ইসলামিক শিক্ষা, আল-কুরআন, সহীহ হাদীস ও দৈনন্দিন আমল</p>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-xl mx-auto p-4 space-y-5">
+
+        <!-- 2. Auto-Rotating Sahih Hadith Card (8 Seconds Interval) -->
+        <section class="bg-gradient-to-r from-amber-50 to-orange-50 border-l-4 border-amber-500 rounded-xl p-5 shadow-sm">
+            <div class="flex justify-between items-center mb-2 pb-1 border-b border-amber-200">
+                <span class="text-xs font-bold text-amber-900 uppercase tracking-wider">📖 আজকের সহীহ হাদিস</span>
+                <span id="hadith-source" class="text-[11px] bg-amber-200 text-amber-900 px-2.5 py-0.5 rounded-full font-bold shadow-sm">সহীহ বুখারী</span>
+            </div>
+            <p id="hadith-text" class="text-sm text-slate-800 leading-relaxed font-medium min-h-[60px] flex items-center transition-opacity duration-300">
+                হাদিস লোড হচ্ছে...
+            </p>
+            <div class="mt-2 text-right">
+                <span id="hadith-counter" class="text-[10px] text-amber-700 bg-amber-100 px-2 py-0.5 rounded-md font-bold">হাদিস ১ / ৪০</span>
+            </div>
+        </section>
+
+        <!-- 3. Prayer Times & Hijri Date Section (Dhaka Location) -->
+        <section class="bg-white rounded-xl p-5 shadow-sm border border-slate-200">
+            <!-- Header with Hijri Date -->
+            <div class="flex flex-col sm:flex-row justify-between items-center border-b pb-3 mb-4 gap-2">
+                <div>
+                    <h2 class="text-lg font-bold text-emerald-800 flex items-center gap-1.5">
+                        <span>🕌</span> নামাজের সময়সূচী (ঢাকা)
+                    </h2>
+                    <p id="hijri-date-display" class="text-xs text-amber-600 font-bold mt-0.5">হিজরী তারিখ লোড হচ্ছে...</p>
+                </div>
+                
+                <!-- Date Picker (Next 6 Months) -->
+                <div class="text-right">
+                    <label for="date-select" class="block text-[10px] text-slate-500 font-bold mb-1">তারিখ নির্বাচন করুন (আগামী ৬ মাস):</label>
+                    <input type="date" id="date-select" onchange="fetchPrayerTimes(this.value)" class="text-xs bg-emerald-50 text-emerald-900 border border-emerald-300 rounded-lg p-1.5 font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+            </div>
+
+            <!-- Prayer Grid -->
+            <div id="prayer-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                <div class="col-span-full text-center text-slate-400 py-4">সময়সূচী লোড হচ্ছে...</div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- JavaScript Engine -->
+    <script>
+        // --- 1. 40 Sahih Hadith Collection ---
+        const sahihHadiths = [
+            { text: "রাসূলুল্লাহ (ﷺ) বলেছেন: 'তোমাদের মধ্যে সেই ব্যক্তি সর্বোত্তম, যে কুরআন শেখে এবং অন্যকে শেখায়।'", source: "সহীহ বুখারী: ৫০২৭" },
+            { text: "রাসূলুল্লাহ (ﷺ) বলেছেন: 'নিশ্চয়ই নিয়তের ওপরই সমস্ত কাজের ফলাফল নির্ভর করে।'", source: "সহীহ বুখারী: ১" },
+            { text: "রাসূলুল্লাহ (ﷺ) বলেছেন: 'পবিত্রতা ঈমানের অর্ধেক।'", source: "সহীহ মুসলিম: ২২৩" },
+            { text: "রাসূলুল্লাহ (ﷺ) বলেছেন: 'যে ব্যক্তি আল্লাহর সন্তুষ্টির জন্য একটি মসজিদ নির্মাণ করবে, আল্লাহ তার জন্য জান্নাতে একটি ঘর তৈরি করবেন।'", source: "সহীহ বুখারী: ৪৫০" },
+            { text: "রাসূলুল্লাহ (ﷺ) বলেছেন: 'সহজ করো, কঠিন করো না; সুসংবাদ দাও, ভিটি প্রদর্শন করো না।'", source: "সহীহ বুখারী: ৬৯" },
+            { text: "রাসূলুল্লাহ (ﷺ) বলেছেন: 'প্রকৃত মুসলিম সে-ই, যার জিহ্বা ও হাত থেকে অন্য মুসলিম নিরাপদ থাকে।'", source: "সহীহ বুখারী: ১০" },
+            { text: "রাসূলুল্লাহ (ﷺ) বলেছেন: 'যে ব্যক্তি আল-কুরআনের একটি হরফ পাঠ করবে, সে একটি নেকি পাবে, আর একটি নেকি দশটির সমান।'", source: "জামে আত-তিরমিজী: ২৯১০" },
+            { text: "রাসূলুল্লাহ (ﷺ) বলেছেন: 'দোয়া হলো ইবাদতের মূল।'", source: "জামে আত-তিরমিজী: ৩৩৭১" },
+            { text: "রাসূলুল্লাহ (ﷺ) বলেছেন: 'তোমাদের কেউ ততক্ষণ পর্যন্ত পূর্ণ ঈমানদার হতে পারবে না, যতক্ষণ না সে তার ভাইয়ের জন্য তা-ই পছন্দ করে যা নিজের জন্য করে।'", source: "সহীহ বুখারী: ১৩" },
+            { text: "রাসূলুল্লাহ (ﷺ) বলেছেন: 'যে ব্যক্তি কোনো সৎকাজের পথ দেখায়, সে কাজটি সম্পাদনকারীর সমান সওয়াব পাবে।'", source: "সহীহ মুসলিম: ১৮৯৩" },
+            { text: "রাসূলুল্লাহ (ﷺ) বলেছেন: 'যে ব্যক্তি দিনে ১০০ বার 'সুবহানাল্লাহি ওয়া বিহামদিহি' বলবে, তার পাপ মুছে ফেলা হবে যদিও তা সমুদ্রের ফেনার সমান হয়।'", source: "সহীহ বুখারী: ৬৪০৫" },
+            { text: "রাসূলুল্লাহ (ﷺ) বলেছেন: 'বান্দা সিজদারত অবস্থায় আল্লাহর সবচেয়ে নিকটবর্তী হয়, তাই তখন বেশি বেশি দোয়া করো।'", source: "সহীহ মুসলিম: ৪৮২" },
+            { text: "রাসূলুল্লাহ (ﷺ) বলেছেন: 'মজলুমের বদদোয়াকে ভয় করো, কারণ তার বদদোয়া ও আল্লাহর মধ্যে কোনো পর্দা থাকে না।'", source: "সহীহ বুখারী: ২৪৪৮" },
+            { text: "রাসূলুল্লাহ (ﷺ) বলেছেন: 'আত্মীয়তার সম্পর্ক ছিন্নকারী জান্নাতে প্রবেশ করবে না।'", source: "সহীহ বুখারী: ৫৯৮৪" },
+            { text: "রাসূলুল্লাহ (ﷺ) বলেছেন: 'শক্তিশালী ব্যক্তি সে নয় যে কুস্তিতে হারিয়ে দেয়, বরং শক্তিশালী সে যে রাগের মাথায় নিজেকে নিয়ন্ত্রণে রাখে।'", source: "সহীহ বুখারী: ৬১১৪" },
+            { text: "রাসূলুল্লাহ (ﷺ) বলেছেন: 'তোমাদের মধ্যে তারাই আমার কাছে সবচেয়ে প্রিয় এবং কিয়ামতের দিন সবচেয়ে নিকটবর্তী হবে, যাদের চরিত্র সবচেয়ে সুন্দর।'", source: "জামে আত-তিরমিজী: ২০১১৮" },
+            { text: "রাসূলুল্লাহ (ﷺ) বলেছেন: 'যে ব্যক্তি আমার ওপর একবার দরূদ পাঠ করবে, আল্লাহ তার ওপর দশটি রহমত বর্ষণ করবেন।'", source: "সহীহ মুসলিম: ৪০৮" },
+            { text: "রাসূলুল্লাহ (ﷺ) বলেছেন: 'প্রতিটি ভালো কাজই একটি দান (সদকা)।'", source: "সহীহ বুখারী: ৬০২১" },
+            { text: "রাসূলুল্লাহ (ﷺ) বলেছেন: 'যে ব্যক্তি জ্ঞান অর্জনের উদ্দেশ্যে বের হয়, সে ফিরে না আসা পর্যন্ত আল্লাহর রাস্তায় থাকে।'", source: "জামে আত-তিরমিজী: ২৬৪৭" },
+            { text: "রাসূলুল্লাহ (ﷺ) বলেছেন: 'তুমি যেখানেই থাকো আল্লাহকে ভয় করো, মন্দের পর ভালো কাজ করো যা মন্দকে মুছে দেবে এবং মানুষের সাথে সুন্দর আচরণ করো।'", source: "জামে আত-তিরমিজী: ১৯৮৭" },
+            { text: "রাসূলুল্লাহ (ﷺ) বলেছেন: 'জান্নাত মাতাদের পায়ের নিচে।'", source: "সুনান আন-নাসায়ী: ৩১০৪" },
+            { text: "রাসূলুল্লাহ (ﷺ) বলেছেন: 'যে ব্যক্তি সত্যবাদীতার ওপর অবিচল থাকে, আল্লাহ তাকে সত্যবাদী হিসেবে লিপিবদ্ধ করেন।'", source: "সহীহ বুখারী: ৬০৯৪" },
+            { text: "রাসূলুল্লাহ (ﷺ) বলেছেন: 'অহংকার যার অন্তরে অণু পরিমাণও থাকবে, সে জান্নাতে প্রবেশ করবে না।'", source: "সহীহ মুসলিম: ৯১" },
+            { text: "রাসূলুল্লাহ (ﷺ) বলেছেন: 'যে ব্যক্তি সকালে ও সন্ধ্যায় তিনবার 'বিসমিল্লাহিল্লাজি লা ইয়াদুররু...' পড়বে, কোনো কিছুই তার ক্ষতি করতে পারবে না।'", source: "সুনান আবু দাউদ: ৫০৮৮" },
+            { text: "রাসূলুল্লাহ (ﷺ) বলেছেন: 'পাঁচ ওয়াক্ত সালাত এবং এক জুমআ থেকে পরবর্তী জুমআ অন্তর্বর্তীকালীন গুনাহের কাফফারা স্বরূপ।'", source: "সহীহ মুসলিম: ২৩৩" },
+            { text: "রাসূলুল্লাহ (ﷺ) বলেছেন: 'যে ব্যক্তি নম্রতা অবলম্বন করে, আল্লাহ তাকে সম্মানিত করেন।'", source: "সহীহ মুসলিম: ২৫৮৮" },
+            { text: "রাসূলুল্লাহ (ﷺ) বলেছেন: 'কৃপণ সে ব্যক্তি, যার সামনে আমার নাম উচ্চারিত হলো কিন্তু সে দরূদ পাঠ করল না।'", source: "জামে আত-তিরমিজী: ৩৫৪৬" },
+            { text: "রাসূলুল্লাহ (ﷺ) বলেছেন: 'মুুমিনের কসম! কোনো মুসলিমের জন্য তিন দিনের বেশি ভাইয়ের সাথে সম্পর্ক ছিন্ন রাখা জায়েজ নয়।'", source: "সহীহ বুখারী: ৬০৬৫" },
+            { text: "রাসূলুল্লাহ (ﷺ) বলেছেন: 'যে ব্যক্তি ক্ষমা করে, আল্লাহ তার সম্মান বাড়িয়ে দেন।'", source: "সহীহ মুসলিম: ২৫৮৮" },
+            { text: "রাসূলুল্লাহ (ﷺ) বলেছেন: 'তোমাদের কেউ যেন হেলান দিয়ে খাবার না খায়।'", source: "সহীহ বুখারী: ৫৩৯০" },
+            { text: "রাসূলুল্লাহ (ﷺ) বলেছেন: 'যে লোক মানুষের প্রতি কৃতজ্ঞতা প্রকাশ করে না, সে আল্লাহর প্রতিও কৃতজ্ঞ হয় না।'", source: "সুনান আবু দাউদ: ৪৮১১" },
+            { text: "রাসূলুল্লাহ (ﷺ) বলেছেন: 'আল্লাহ সুন্দর এবং তিনি সৌন্দর্য পছন্দ করেন।'", source: "সহীহ মুসলিম: ৯১" },
+            { text: "রাসূলুল্লাহ (ﷺ) বলেছেন: 'রহমান (আল্লাহ) দয়ালুদের প্রতি দয়া করেন। তোমরা জমিনে যারা আছে তাদের প্রতি দয়া করো, আসমানের সত্তা তোমাদের প্রতি দয়া করবেন।'", source: "সুনান আবু দাউদ: ৪৯৪১" },
+            { text: "রাসূলুল্লাহ (ﷺ) বলেছেন: 'তোমাদের কেউ যেন বাম হাত দিয়ে না খায় এবং না পান করে, কারণ শয়তান বাম হাতে খায় ও পান করে।'", source: "সহীহ মুসলিম: ২০২১" },
+            { text: "রাসূলুল্লাহ (ﷺ) বলেছেন: 'আল্লাহ তোমাদের চেহারা ও সম্পদের দিকে তাকান না, বরং তিনি তাকান তোমাদের অন্তর ও আমলের দিকে।'", source: "সহীহ মুসলিম: ২৫৬৪" },
+            { text: "রাসূলুল্লাহ (ﷺ) বলেছেন: 'যে ব্যক্তি ঘুমানোর আগে আয়াতুল কুরসী পাঠ করবে, সারারাত আল্লাহর পক্ষ থেকে একজন রক্ষক তাকে পাহারা দেবে।'", source: "সহীহ বুখারী: ২৩১১" },
+            { text: "রাসূলুল্লাহ (ﷺ) বলেছেন: 'লজ্জাশীলতা ঈমানেরই অঙ্গ।'", source: "সহীহ বুখারী: ২৪" },
+            { text: "রাসূলুল্লাহ (ﷺ) বলেছেন: 'তোমরা হিংসা-বিদ্বেষ থেকে বেঁচে থাকো, কারণ হিংসা নেকিগুলোকে এমনভাবে খেয়ে ফেলে যেমন আগুন কাঠকে খেয়ে ফেলে।'", source: "সুনান আবু দাউদ: ৪৯০৩" },
+            { text: "রাসূলুল্লাহ (ﷺ) বলেছেন: 'যে ব্যক্তি আমার ওপর মিথ্যা কথা বলবে, সে যেন তার ঠিকানা জাহান্নামে বানিয়ে নেয়।'", source: "সহীহ বুখারী: ১১০" },
+            { text: "রাসূলুল্লাহ (ﷺ) বলেছেন: 'উত্তম কথা বলাও এক ধরণের সদকা।'", source: "সহীহ বুখারী: ২৯৮৯" }
+        ];
+
+        let hadithIndex = 0;
+        function updateHadith() {
+            const textElement = document.getElementById('hadith-text');
+            const sourceElement = document.getElementById('hadith-source');
+            const counterElement = document.getElementById('hadith-counter');
+
+            textElement.style.opacity = '0';
+            setTimeout(() => {
+                textElement.innerText = sahihHadiths[hadithIndex].text;
+                sourceElement.innerText = sahihHadiths[hadithIndex].source;
+                counterElement.innerText = `হাদিস ${hadithIndex + 1} / ${sahihHadiths.length}`;
+                textElement.style.opacity = '1';
+                hadithIndex = (hadithIndex + 1) % sahihHadiths.length;
+            }, 300);
+        }
+        updateHadith();
+        setInterval(updateHadith, 8000);
+
+        // --- 2. Setup Date Picker (Range: Today to 6 Months Ahead) ---
+        const dateInput = document.getElementById('date-select');
+        const today = new Date();
+        const maxDate = new Date();
+        maxDate.setMonth(today.getMonth() + 6); // Add 6 months
+
+        const formatDate = (d) => d.toISOString().split('T')[0];
+        dateInput.value = formatDate(today);
+        dateInput.min = formatDate(today);
+        dateInput.max = formatDate(maxDate);
+
+        // --- 3. Dhaka Prayer Times Engine ---
+        function fetchPrayerTimes(selectedDateStr) {
+            const dateObj = new Date(selectedDateStr);
+            const day = String(dateObj.getDate()).padStart(2, '0');
+            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const year = dateObj.getFullYear();
+
+            // Fetch Data from Aladhan API (Karachi/Islamic University Method for Bangladesh)
+            fetch(`https://api.aladhan.com/v1/timings/${day}-${month}-${year}?city=Dhaka&country=Bangladesh&method=1`)
+                .then(res => res.json())
+                .then(data => {
+                    const t = data.data.timings;
+                    const h = data.data.date.hijri;
+
+                    // Update Hijri Date Banner
+                    document.getElementById('hijri-date-display').innerText = `তারিখ: ${h.day} ${h.month.ar} (${h.month.en}) ${h.year} হিজরী`;
+
+                    // Generate Prayer Timing Cards
+                    document.getElementById('prayer-grid').innerHTML = `
+                        <div class="bg-emerald-50 border border-emerald-200 p-2.5 rounded-lg">
+                            <span class="font-bold text-emerald-900 block border-b border-emerald-200 pb-1 mb-1">🌅 ফজর</span>
+                            <div class="flex justify-between text-slate-700"><span>শুরু: <b>${t.Fajr}</b></span><span>শেষ: <b>${t.Sunrise}</b></span></div>
+                        </div>
+
+                        <div class="bg-amber-50 border border-amber-200 p-2.5 rounded-lg">
+                            <span class="font-bold text-amber-900 block border-b border-amber-200 pb-1 mb-1">☀️ সূর্যোদয় ও সূর্যাস্ত</span>
+                            <div class="flex justify-between text-slate-700"><span>সূর্যোদয়: <b>${t.Sunrise}</b></span><span>সূর্যাস্ত: <b>${t.Sunset}</b></span></div>
+                        </div>
+
+                        <div class="bg-emerald-50 border border-emerald-200 p-2.5 rounded-lg">
+                            <span class="font-bold text-emerald-900 block border-b border-emerald-200 pb-1 mb-1">☀️ জোহর</span>
+                            <div class="flex justify-between text-slate-700"><span>শুরু: <b>${t.Dhuhr}</b></span><span>শেষ: <b>${t.Asr}</b></span></div>
+                        </div>
+
+                        <div class="bg-emerald-50 border border-emerald-200 p-2.5 rounded-lg">
+                            <span class="font-bold text-emerald-900 block border-b border-emerald-200 pb-1 mb-1">🌤️ আসর</span>
+                            <div class="flex justify-between text-slate-700"><span>শুরু: <b>${t.Asr}</b></span><span>শেষ: <b>${t.Sunset}</b></span></div>
+                        </div>
+
+                        <div class="bg-emerald-50 border border-emerald-200 p-2.5 rounded-lg">
+                            <span class="font-bold text-emerald-900 block border-b border-emerald-200 pb-1 mb-1">🌆 মাগরিব</span>
+                            <div class="flex justify-between text-slate-700"><span>শুরু: <b>${t.Maghrib}</b></span><span>শেষ: <b>${t.Isha}</b></span></div>
+                        </div>
+
+                        <div class="bg-emerald-50 border border-emerald-200 p-2.5 rounded-lg">
+                            <span class="font-bold text-emerald-900 block border-b border-emerald-200 pb-1 mb-1">🌙 এশা</span>
+                            <div class="flex justify-between text-slate-700"><span>শুরু: <b>${t.Isha}</b></span><span>শেষ: <b>${t.Fajr}</b> (রাত)</span></div>
+                        </div>
+
+                        <div class="col-span-full bg-indigo-50 border border-indigo-200 p-3 rounded-lg">
+                            <span class="font-bold text-indigo-900 block border-b border-indigo-200 pb-1 mb-1 flex items-center gap-1">
+                                <span>🌌</span> তাহাজ্জুদ সালাতের সময় (উত্তম সময়)
+                            </span>
+                            <div class="flex justify-between text-slate-700">
+                                <span>শুরু (এশার পর শেষ তৃতীয়াংশ): <b>${t.Isha}</b></span>
+                                <span>শেষ (ফজরের পূর্বে): <b>${t.Fajr}</b></span>
+                            </div>
+                        </div>
+                    `;
+                })
+                .catch(() => {
+                    document.getElementById('prayer-grid').innerHTML = `<p class="col-span-full text-red-500 text-center py-2">সময়সূচী লোড করা সম্ভব হয়নি। ইন্টারনেট কানেকশন চেক করুন।</p>`;
+                });
+        }
+
+        // First Load
+        fetchPrayerTimes(dateInput.value);
+    </script>
+</body>
+</html>

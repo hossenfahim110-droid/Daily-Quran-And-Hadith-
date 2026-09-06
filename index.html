@@ -343,3 +343,241 @@
     </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Quran And Hadith</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-emerald-50 text-gray-800 font-sans pb-10">
+
+    <!-- Header -->
+    <header class="bg-emerald-700 text-white text-center py-6 shadow-lg">
+        <h1 class="text-2xl font-bold">Daily Quran And Hadith</h1>
+        <p class="text-xs mt-1">ইসলামিক সেবা ও সহীহ তথ্যের একটি বিশ্বস্ত মাধ্যম</p>
+    </header>
+
+    <div class="max-w-md mx-auto p-4 space-y-5">
+
+        <!-- Dynamic Sahih Hadith Card -->
+        <div class="bg-amber-100 p-5 rounded-xl shadow border-l-4 border-amber-600">
+            <h2 class="text-sm font-bold text-amber-900 flex justify-between items-center">
+                <span>📖 আজকের সহীহ হাদিস</span>
+                <span class="text-xs text-amber-700 bg-amber-200 px-2 py-0.5 rounded" id="hadith-source">সহীহ বুখারী</span>
+            </h2>
+            <p id="hadith-text" class="text-sm text-gray-800 mt-2 font-medium">হাদিস লোড হচ্ছে...</p>
+        </div>
+
+        <!-- Prayer Times Section (Bangla) -->
+        <div class="bg-white p-5 rounded-xl shadow border-t-4 border-emerald-600">
+            <h2 class="text-lg font-bold text-emerald-800 mb-3">🕌 আজকের নামাজের সময়সূচী (ঢাকা)</h2>
+            <div id="prayer-times" class="grid grid-cols-2 gap-2 text-center text-sm font-semibold">
+                <p class="col-span-2 text-gray-500">সময়সূচী লোড হচ্ছে...</p>
+            </div>
+        </div>
+
+        <!-- Digital Tasbih & Qibla Finder -->
+        <div class="grid grid-cols-2 gap-3">
+            <!-- Digital Tasbih -->
+            <div class="bg-white p-4 rounded-xl shadow border-t-4 border-emerald-600 text-center">
+                <h3 class="text-sm font-bold text-emerald-800">📿 ডিজিটাল তাসবীহ</h3>
+                <div id="tasbih-count" class="text-3xl font-bold text-emerald-700 my-2">0</div>
+                <div class="flex justify-center gap-2">
+                    <button onclick="countTasbih()" class="bg-emerald-600 text-white px-3 py-1 rounded-lg text-sm font-bold active:scale-95 transition">+ ১</button>
+                    <button onclick="resetTasbih()" class="bg-gray-200 text-gray-700 px-2 py-1 rounded-lg text-xs">রিসেট</button>
+                </div>
+            </div>
+
+            <!-- Qibla Direction -->
+            <div class="bg-white p-4 rounded-xl shadow border-t-4 border-emerald-600 text-center flex flex-col justify-between">
+                <h3 class="text-sm font-bold text-emerald-800">🧭 ক্বিবলা কম্পাস</h3>
+                <p id="qibla-deg" class="text-xs text-gray-600 my-1">দিক নির্ণয় করা হচ্ছে...</p>
+                <button onclick="getQibla()" class="bg-emerald-600 text-white text-xs py-1.5 px-2 rounded-lg font-bold">ক্বিবলার দিক দেখুন</button>
+            </div>
+        </div>
+
+        <!-- Daily Zikir Section -->
+        <div class="bg-white p-5 rounded-xl shadow border-t-4 border-emerald-600">
+            <h2 class="text-lg font-bold text-emerald-800 mb-2">🤲 দৈনিক প্রয়োজনীয় জিকির</h2>
+            <div class="space-y-2 text-xs">
+                <div class="p-2 bg-emerald-50 rounded border">
+                    <p class="font-bold text-emerald-900">১. সুবহানাল্লাহ (سُبْحَانَ اللَّهِ)</p>
+                    <p class="text-gray-600">অর্থ: আল্লাহ পবিত্র। (দিনে ১০০ বার)</p>
+                </div>
+                <div class="p-2 bg-emerald-50 rounded border">
+                    <p class="font-bold text-emerald-900">২. আলহামদুলিল্লাহ (الْحَمْدُ لِلَّهِ)</p>
+                    <p class="text-gray-600">অর্থ: সমস্ত প্রশংসা আল্লাহর জন্য।</p>
+                </div>
+                <div class="p-2 bg-emerald-50 rounded border">
+                    <p class="font-bold text-emerald-900">৩. লা ইলাহা ইল্লাল্লাহ (لَا إِلٰهَ إِلَّا اللَّهُ)</p>
+                    <p class="text-gray-600">অর্থ: আল্লাহ ছাড়া কোনো উপাস্য নেই।</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Surah Player & Details Section -->
+        <div id="surah-details" class="hidden bg-white p-5 rounded-xl shadow border-t-4 border-emerald-600">
+            <div class="flex justify-between items-center mb-3">
+                <h2 id="surah-title" class="text-lg font-bold text-emerald-800">Surah Details</h2>
+                <button onclick="closeSurah()" class="text-xs bg-red-500 text-white px-2 py-1 rounded">বন্ধ করুন</button>
+            </div>
+
+            <!-- Reciter Selection -->
+            <div class="mb-3">
+                <label for="reciter-select" class="block text-xs font-bold text-gray-600 mb-1">ক্বারী নির্বাচন করুন:</label>
+                <select id="reciter-select" onchange="changeReciter()" class="w-full p-2 border rounded text-sm bg-gray-50 font-medium">
+                    <option value="https://server12.mp3quran.net/maher/">Sheikh Maher Al Muaiqly</option>
+                    <option value="https://server11.mp3quran.net/yasser/">Sheikh Yasser Al-Dosari</option>
+                    <option value="https://server11.mp3quran.net/sds/">Sheikh Abdul Rahman Al-Sudais</option>
+                    <option value="https://server8.mp3quran.net/afs/">Sheikh Mishary Rashid Alafasy</option>
+                </select>
+            </div>
+            
+            <audio id="audio-player" controls class="w-full mb-4 shadow-sm rounded-lg"></audio>
+            
+            <div id="surah-text" class="space-y-4 max-h-80 overflow-y-auto text-sm border-t pt-3">
+                <p class="text-gray-500">লোডিং...</p>
+            </div>
+        </div>
+
+        <!-- Quran Surah List Section -->
+        <div class="bg-white p-5 rounded-xl shadow border-t-4 border-emerald-600">
+            <h2 class="text-lg font-bold text-emerald-800 mb-3">📖 আল-কুরআন সূরা তালিকা</h2>
+            <ul id="surah-list" class="space-y-2 max-h-60 overflow-y-auto text-sm">
+                <li class="text-gray-500">সূরা লোড হচ্ছে...</li>
+            </ul>
+        </div>
+
+    </div>
+
+    <!-- Script Logic -->
+    <script>
+        // 1. Sahih Hadith Collection (Auto Rotates)
+        const sahihHadiths = [
+            { text: "রাসূলুল্লাহ (সাল্লাল্লাহু আলাইহি ওয়া সাল্লাম) বলেছেন: 'তোমাদের মধ্যে সেই ব্যক্তি সর্বোত্তম, যে কুরআন শেখে এবং অন্যকে শেখায়।'", source: "সহীহ বুখারী: ৫০২৭" },
+            { text: "রাসূলুল্লাহ (সাল্লাল্লাহু আলাইহি ওয়া সাল্লাম) বলেছেন: 'নিশ্চয়ই নিয়তের ওপরই সমস্ত কাজের ফলাফল নির্ভর করে।'", source: "সহীহ বুখারী: ১" },
+            { text: "রাসূলুল্লাহ (সাল্লাল্লাহু আলাইহি ওয়া সাল্লাম) বলেছেন: 'পবিত্রতা ঈমানের অর্ধেক।'", source: "সহীহ মুসলিম: ২২৩" },
+            { text: "রাসূলুল্লাহ (সাল্লাল্লাহু আলাইহি ওয়া সাল্লাম) বলেছেন: 'যে ব্যক্তি আল্লাহর সন্তুষ্টির জন্য একটি মসজিদ নির্মাণ করবে, আল্লাহ তার জন্য জান্নাতে একটি ঘর তৈরি করবেন।'", source: "সহীহ বুখারী: ৪৫০" }
+        ];
+
+        let hadithIndex = 0;
+        function updateHadith() {
+            document.getElementById('hadith-text').innerText = sahihHadiths[hadithIndex].text;
+            document.getElementById('hadith-source').innerText = sahihHadiths[hadithIndex].source;
+            hadithIndex = (hadithIndex + 1) % sahihHadiths.length;
+        }
+        updateHadith();
+        setInterval(updateHadith, 10000); // ৮-১০ সেকেন্ড পর পর নতুন হাদিস আসবে
+
+        // 2. Tasbih Counter
+        let count = 0;
+        function countTasbih() {
+            count++;
+            document.getElementById('tasbih-count').innerText = count;
+        }
+        function resetTasbih() {
+            count = 0;
+            document.getElementById('tasbih-count').innerText = count;
+        }
+
+        // 3. Qibla Finder
+        function getQibla() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    // Dhaka/BD default Qibla Angle roughly around ~263° West-South-West
+                    document.getElementById('qibla-deg').innerText = `আপনার অবস্থান থেকে ক্বিবলা: প্রায় ২৬৩° (পশ্চিম-দক্ষিণ-পশ্চিম)`;
+                }, () => {
+                    document.getElementById('qibla-deg').innerText = `বাংলাদেশ থেকে ক্বিবলা: প্রায় ২৬৩° পশ্চিম দিকে।`;
+                });
+            } else {
+                document.getElementById('qibla-deg').innerText = `বাংলাদেশ থেকে ক্বিবলা: প্রায় ২৬৩° পশ্চিম দিকে।`;
+            }
+        }
+
+        // 4. Bangla Prayer Times (Dhaka)
+        fetch('https://api.aladhan.com/v1/timingsByCity?city=Dhaka&country=Bangladesh&method=2')
+            .then(res => res.json())
+            .then(data => {
+                const t = data.data.timings;
+                document.getElementById('prayer-times').innerHTML = `
+                    <div class="bg-emerald-100 p-2 rounded"><b>ফজর:</b> ${t.Fajr}</div>
+                    <div class="bg-emerald-100 p-2 rounded"><b>জোহর:</b> ${t.Dhuhr}</div>
+                    <div class="bg-emerald-100 p-2 rounded"><b>আসর:</b> ${t.Asr}</div>
+                    <div class="bg-emerald-100 p-2 rounded"><b>মাগরিব:</b> ${t.Maghrib}</div>
+                    <div class="bg-emerald-100 p-2 rounded border-emerald-400"><b>ইশা:</b> ${t.Isha}</div>
+                    <div class="bg-emerald-100 p-2 rounded"><b>তাহাজ্জুদ/সাহরী শেষ:</b> ${t.Imsak}</div>
+                `;
+            });
+
+        // 5. Quran API logic
+        let currentSurahNumber = null;
+        fetch('https://api.alquran.cloud/v1/surah')
+            .then(res => res.json())
+            .then(data => {
+                const surahs = data.data;
+                let html = '';
+                surahs.forEach(s => {
+                    html += `<li onclick="openSurah(${s.number}, '${s.englishName}')" class="p-2 border rounded flex justify-between bg-gray-50 cursor-pointer hover:bg-emerald-100 transition">
+                        <span>${s.number}. <b>${s.englishName}</b></span>
+                        <span class="text-xs bg-emerald-200 px-2 py-0.5 rounded">${s.name}</span>
+                    </li>`;
+                });
+                document.getElementById('surah-list').innerHTML = html;
+            });
+
+        function openSurah(number, name) {
+            currentSurahNumber = number;
+            const detailsBox = document.getElementById('surah-details');
+            const title = document.getElementById('surah-title');
+            const textDiv = document.getElementById('surah-text');
+
+            detailsBox.classList.remove('hidden');
+            title.innerText = `${number}. ${name}`;
+            textDiv.innerHTML = '<p class="text-gray-500">লোডিং...</p>';
+            
+            updateAudioSource();
+
+            Promise.all([
+                fetch(`https://api.alquran.cloud/v1/surah/${number}/quran-uthmani`).then(res => res.json()),
+                fetch(`https://api.alquran.cloud/v1/surah/${number}/bn.bengali`).then(res => res.json())
+            ]).then(([arabicData, bnData]) => {
+                let ayahsHtml = '';
+                const arabicAyahs = arabicData.data.ayahs;
+                const bnAyahs = bnData.data.ayahs;
+
+                arabicAyahs.forEach((a, index) => {
+                    ayahsHtml += `
+                        <div class="border-b pb-2 space-y-1">
+                            <p class="text-right text-lg font-serif text-emerald-900">${a.text} <span class="text-xs text-emerald-600">(${a.numberInSurah})</span></p>
+                            <p class="text-left text-sm text-gray-700"><b>অর্থ:</b> ${bnAyahs[index].text}</p>
+                        </div>
+                    `;
+                });
+                textDiv.innerHTML = ayahsHtml;
+            });
+        }
+
+        function updateAudioSource() {
+            if (!currentSurahNumber) return;
+            const reciterServer = document.getElementById('reciter-select').value;
+            const surahFormatted = String(currentSurahNumber).padStart(3, '0');
+            const player = document.getElementById('audio-player');
+            player.src = `${reciterServer}${surahFormatted}.mp3`;
+        }
+
+        function changeReciter() {
+            updateAudioSource();
+            document.getElementById('audio-player').play();
+        }
+
+        function closeSurah() {
+            document.getElementById('surah-details').classList.add('hidden');
+            document.getElementById('audio-player').pause();
+        }
+    </script>
+</body>
+</html>

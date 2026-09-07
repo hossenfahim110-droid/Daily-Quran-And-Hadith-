@@ -2086,3 +2086,60 @@
 
 </body>
 </html>
+let audio = null;
+let currentAudioSurah = 1;
+let currentAudioAyah = 1;
+
+function playAyah(surah, ayah) {
+    stopAudio();
+
+    currentAudioSurah = surah;
+    currentAudioAyah = ayah;
+
+    const qariIndex = Number(document.getElementById("qari").value);
+    const qari = qaris[qariIndex] || qaris[0];
+
+    const file =
+        String(surah).padStart(3, "0") +
+        String(ayah).padStart(3, "0") +
+        ".mp3";
+
+    const url = `https://everyayah.com/data/${qari[1]}/${file}`;
+
+    audio = new Audio(url);
+
+    audio.onended = function () {
+        playNextAyah();
+    };
+
+    audio.onerror = function () {
+        alert("এই Qari-এর অডিও পাওয়া যায়নি। অন্য Qari নির্বাচন করুন।");
+    };
+
+    audio.play().catch(() => {
+        alert("অডিও চালু করা যাচ্ছে না।");
+    });
+}
+
+function playNextAyah() {
+    currentAudioAyah++;
+
+    const nextButton =
+        document.querySelector(
+            `.ayah:nth-child(${currentAudioAyah}) button`
+        );
+
+    if (nextButton) {
+        playAyah(currentAudioSurah, currentAudioAyah);
+    } else {
+        stopAudio();
+    }
+}
+
+function stopAudio() {
+    if (audio) {
+        audio.pause();
+        audio.currentTime = 0;
+        audio = null;
+    }
+}

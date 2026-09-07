@@ -1,1 +1,2088 @@
 
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Quran And Hadith</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Sans+Bengali:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --green:#075c43;
+      --green2:#0b7a59;
+      --dark:#063c2d;
+      --gold:#d5ad55;
+      --cream:#f7f3e9;
+      --white:#ffffff;
+      --text:#17352b;
+      --muted:#6b7d75;
+      --border:#e5e9e5;
+      --shadow:0 10px 30px rgba(4,63,45,.10);
+    }
+
+    *{
+      box-sizing:border-box;
+      margin:0;
+      padding:0;
+    }
+
+    body{
+      font-family:"Noto Sans Bengali",sans-serif;
+      background:#f5f8f5;
+      color:var(--text);
+      padding-bottom:85px;
+    }
+
+    button,input,select{
+      font-family:inherit;
+    }
+
+    button{
+      cursor:pointer;
+      border:0;
+    }
+
+    .app{
+      max-width:700px;
+      margin:auto;
+      min-height:100vh;
+      background:#f5f8f5;
+    }
+
+    /* HEADER */
+    header{
+      background:linear-gradient(145deg,var(--dark),var(--green),var(--green2));
+      color:white;
+      padding:25px 18px 30px;
+      border-radius:0 0 30px 30px;
+      box-shadow:0 8px 25px rgba(0,60,40,.18);
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    .logo{
+      width:52px;
+      height:52px;
+      border-radius:17px;
+      background:rgba(255,255,255,.13);
+      border:1px solid rgba(255,255,255,.25);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:27px;
+    }
+
+    .brand h1{
+      font-size:21px;
+      line-height:1.2;
+    }
+
+    .brand p{
+      color:#d9eee5;
+      font-size:12px;
+      margin-top:4px;
+    }
+
+    .bismillah{
+      text-align:center;
+      font-family:"Amiri",serif;
+      font-size:27px;
+      margin-top:25px;
+      color:#f7df9c;
+    }
+
+    /* SEARCH */
+    .searchBox{
+      margin:18px;
+      background:white;
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:12px 15px;
+      display:flex;
+      gap:10px;
+      align-items:center;
+      box-shadow:var(--shadow);
+    }
+
+    .searchBox input{
+      border:0;
+      outline:0;
+      flex:1;
+      font-size:14px;
+      background:transparent;
+    }
+
+    /* CONTENT */
+    main{
+      padding:0 18px;
+    }
+
+    .section{
+      display:none;
+      padding-top:20px;
+    }
+
+    .section.active{
+      display:block;
+      animation:fade .25s ease;
+    }
+
+    @keyframes fade{
+      from{opacity:0;transform:translateY(8px)}
+      to{opacity:1;transform:translateY(0)}
+    }
+
+    .sectionTitle{
+      font-size:21px;
+      font-weight:800;
+      margin-bottom:5px;
+      color:var(--dark);
+    }
+
+    .sectionSub{
+      font-size:13px;
+      color:var(--muted);
+      margin-bottom:17px;
+    }
+
+    /* HOME */
+    .hero{
+      background:linear-gradient(135deg,#e7f3ed,#fffaf0);
+      border:1px solid #dce9e1;
+      border-radius:25px;
+      padding:22px;
+      margin-bottom:17px;
+      box-shadow:var(--shadow);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .hero:after{
+      content:"☪";
+      position:absolute;
+      right:-5px;
+      bottom:-25px;
+      font-size:110px;
+      color:rgba(7,92,67,.06);
+    }
+
+    .hero small{
+      color:var(--green2);
+      font-weight:700;
+    }
+
+    .hero h2{
+      font-size:22px;
+      margin:7px 0;
+    }
+
+    .hero p{
+      font-size:13px;
+      color:var(--muted);
+      line-height:1.8;
+    }
+
+    .ayahCard,
+    .hadithCard,
+    .duaCard,
+    .storyCard,
+    .aboutCard{
+      background:white;
+      border:1px solid var(--border);
+      border-radius:22px;
+      padding:20px;
+      margin-bottom:15px;
+      box-shadow:var(--shadow);
+    }
+
+    .arabic{
+      font-family:"Amiri",serif;
+      direction:rtl;
+      text-align:right;
+      font-size:28px;
+      line-height:2;
+      color:#143d31;
+      margin-bottom:10px;
+    }
+
+    .meaning{
+      font-size:14px;
+      line-height:1.9;
+      color:#52635c;
+    }
+
+    .reference{
+      color:var(--green2);
+      font-size:12px;
+      margin-top:12px;
+      font-weight:700;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:12px;
+      margin-bottom:18px;
+    }
+
+    .feature{
+      background:white;
+      border:1px solid var(--border);
+      border-radius:21px;
+      padding:18px 14px;
+      box-shadow:var(--shadow);
+      transition:.2s;
+    }
+
+    .feature:active{
+      transform:scale(.97);
+    }
+
+    .featureIcon{
+      font-size:28px;
+      margin-bottom:8px;
+    }
+
+    .feature strong{
+      display:block;
+      font-size:15px;
+      color:var(--dark);
+    }
+
+    .feature span{
+      display:block;
+      font-size:11px;
+      color:var(--muted);
+      margin-top:4px;
+    }
+
+    /* BUTTONS */
+    .btn{
+      padding:11px 15px;
+      border-radius:13px;
+      font-weight:700;
+      font-size:13px;
+      background:var(--green);
+      color:white;
+    }
+
+    .btn.secondary{
+      background:#edf5f1;
+      color:var(--green);
+    }
+
+    .btn.gold{
+      background:#f5e7bf;
+      color:#72581d;
+    }
+
+    .row{
+      display:flex;
+      gap:9px;
+      flex-wrap:wrap;
+    }
+
+    /* QURAN */
+    .select{
+      width:100%;
+      padding:13px;
+      border-radius:15px;
+      border:1px solid var(--border);
+      background:white;
+      outline:0;
+      margin-bottom:12px;
+      color:var(--text);
+    }
+
+    .surahList{
+      display:grid;
+      gap:10px;
+    }
+
+    .surah{
+      background:white;
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:15px;
+      display:flex;
+      align-items:center;
+      gap:13px;
+      box-shadow:0 5px 18px rgba(0,0,0,.05);
+    }
+
+    .surahNo{
+      width:40px;
+      height:40px;
+      border-radius:13px;
+      background:#eaf4ef;
+      color:var(--green);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:800;
+    }
+
+    .surahInfo{
+      flex:1;
+    }
+
+    .surahInfo strong{
+      display:block;
+      font-size:14px;
+    }
+
+    .surahInfo span{
+      color:var(--muted);
+      font-size:11px;
+    }
+
+    .surahArabic{
+      font-family:"Amiri";
+      font-size:20px;
+      direction:rtl;
+    }
+
+    .ayah{
+      background:white;
+      border-radius:22px;
+      border:1px solid var(--border);
+      padding:19px;
+      margin-bottom:13px;
+      box-shadow:var(--shadow);
+    }
+
+    .ayahTop{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:10px;
+    }
+
+    .ayahNumber{
+      background:#eaf4ef;
+      color:var(--green);
+      border-radius:10px;
+      padding:5px 9px;
+      font-size:11px;
+      font-weight:800;
+    }
+
+    .audioBtn{
+      width:37px;
+      height:37px;
+      border-radius:50%;
+      background:var(--green);
+      color:white;
+    }
+
+    /* HADITH */
+    .bookGrid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:11px;
+    }
+
+    .book{
+      background:white;
+      border:1px solid var(--border);
+      border-radius:19px;
+      padding:17px;
+      box-shadow:var(--shadow);
+      text-align:left;
+    }
+
+    .bookIcon{
+      font-size:25px;
+      margin-bottom:7px;
+    }
+
+    .book strong{
+      display:block;
+      font-size:14px;
+    }
+
+    .book span{
+      font-size:11px;
+      color:var(--muted);
+    }
+
+    .hadithArabic{
+      font-family:"Amiri";
+      direction:rtl;
+      text-align:right;
+      font-size:24px;
+      line-height:1.9;
+      margin-bottom:12px;
+    }
+
+    .grade{
+      display:inline-block;
+      background:#e8f5ed;
+      color:#23714f;
+      border-radius:10px;
+      padding:5px 9px;
+      font-size:11px;
+      font-weight:700;
+      margin-top:8px;
+    }
+
+    /* DUA */
+    .duaArabic{
+      font-family:"Amiri";
+      direction:rtl;
+      text-align:right;
+      font-size:25px;
+      line-height:2;
+      color:#163f32;
+    }
+
+    .pronunciation{
+      color:#6a5c35;
+      font-size:13px;
+      line-height:1.8;
+      margin:10px 0;
+    }
+
+    /* TASBIH */
+    .tasbihBox{
+      text-align:center;
+      background:linear-gradient(150deg,#063c2d,#087653);
+      color:white;
+      border-radius:30px;
+      padding:30px 20px;
+      box-shadow:0 15px 35px rgba(0,70,50,.22);
+    }
+
+    .dhikrSelect{
+      width:100%;
+      padding:13px;
+      border-radius:15px;
+      border:0;
+      margin-bottom:22px;
+      background:white;
+      color:var(--text);
+    }
+
+    .count{
+      font-size:70px;
+      font-weight:800;
+      margin:10px;
+    }
+
+    .tasbihButton{
+      width:180px;
+      height:180px;
+      border-radius:50%;
+      background:#f4dfaa;
+      color:#174c3b;
+      font-size:23px;
+      font-weight:800;
+      box-shadow:0 10px 0 #c4a35c;
+      transition:.08s;
+    }
+
+    .tasbihButton:active{
+      transform:translateY(7px);
+      box-shadow:0 3px 0 #c4a35c;
+    }
+
+    /* STORIES */
+    .storyTitle{
+      font-size:18px;
+      font-weight:800;
+      margin-bottom:8px;
+    }
+
+    .storyText{
+      font-size:13px;
+      color:#586a63;
+      line-height:1.9;
+    }
+
+    /* PRAYER */
+    .prayerCard{
+      background:white;
+      border:1px solid var(--border);
+      border-radius:19px;
+      padding:16px;
+      margin-bottom:10px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      box-shadow:0 5px 15px rgba(0,0,0,.05);
+    }
+
+    .prayerName{
+      font-weight:800;
+    }
+
+    .prayerArabic{
+      font-family:"Amiri";
+      color:var(--green);
+    }
+
+    .time{
+      font-weight:800;
+      color:var(--dark);
+    }
+
+    /* MORE */
+    .menu{
+      display:grid;
+      gap:10px;
+    }
+
+    .menuItem{
+      background:white;
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:16px;
+      display:flex;
+      align-items:center;
+      gap:13px;
+      box-shadow:0 5px 17px rgba(0,0,0,.05);
+      text-align:left;
+      width:100%;
+    }
+
+    .menuItem .mi{
+      width:43px;
+      height:43px;
+      border-radius:14px;
+      background:#edf5f1;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:22px;
+    }
+
+    .menuItem strong{
+      display:block;
+      font-size:14px;
+    }
+
+    .menuItem span{
+      display:block;
+      font-size:11px;
+      color:var(--muted);
+    }
+
+    /* SADAQAH */
+    .sadaqah{
+      background:linear-gradient(135deg,#fff8e5,#f0f8f3);
+      border:1px solid #ead9a9;
+    }
+
+    .number{
+      background:white;
+      border:1px dashed #c8ad65;
+      border-radius:15px;
+      padding:14px;
+      font-size:18px;
+      font-weight:800;
+      text-align:center;
+      margin:12px 0;
+    }
+
+    /* BOTTOM NAV */
+    .bottomNav{
+      position:fixed;
+      bottom:0;
+      left:50%;
+      transform:translateX(-50%);
+      width:100%;
+      max-width:700px;
+      height:75px;
+      background:rgba(255,255,255,.97);
+      backdrop-filter:blur(12px);
+      border-top:1px solid var(--border);
+      display:grid;
+      grid-template-columns:repeat(5,1fr);
+      z-index:1000;
+      padding-bottom:5px;
+    }
+
+    .navBtn{
+      background:transparent;
+      color:#718078;
+      font-size:10px;
+      font-weight:700;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:4px;
+    }
+
+    .navBtn .navIcon{
+      font-size:22px;
+    }
+
+    .navBtn.active{
+      color:var(--green);
+    }
+
+    /* TOAST */
+    #toast{
+      position:fixed;
+      left:50%;
+      bottom:90px;
+      transform:translateX(-50%) translateY(20px);
+      background:#143d31;
+      color:white;
+      padding:10px 16px;
+      border-radius:13px;
+      font-size:12px;
+      opacity:0;
+      pointer-events:none;
+      transition:.25s;
+      z-index:2000;
+    }
+
+    #toast.show{
+      opacity:1;
+      transform:translateX(-50%) translateY(0);
+    }
+
+    @media(max-width:420px){
+      .grid,.bookGrid{
+        grid-template-columns:repeat(2,1fr);
+      }
+
+      .hero h2{
+        font-size:19px;
+      }
+
+      .arabic{
+        font-size:25px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- HEADER -->
+  <header>
+    <div class="brand">
+      <div class="logo">☪</div>
+      <div>
+        <h1>Daily Quran And Hadith</h1>
+        <p>কুরআন • হাদিস • দোয়া • যিকির</p>
+      </div>
+    </div>
+
+    <div class="bismillah">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</div>
+  </header>
+
+  <!-- SEARCH -->
+  <div class="searchBox">
+    🔍
+    <input id="globalSearch" type="text" placeholder="কুরআন, হাদিস, দোয়া খুঁজুন..." oninput="globalSearch()">
+  </div>
+
+  <main>
+
+    <!-- HOME -->
+    <section id="home" class="section active">
+
+      <div class="hero">
+        <small>🌙 Daily Reminder</small>
+        <h2>আজ একটু কুরআনের সাথে থাকুন</h2>
+        <p>
+          প্রতিদিন কুরআন ও সহিহ সুন্নাহ থেকে কিছু শেখা,
+          পড়া এবং আমল করার একটি ছোট্ট চেষ্টা।
+        </p>
+      </div>
+
+      <div class="ayahCard">
+        <div class="sectionSub">📖 আজকের আয়াত</div>
+
+        <div class="arabic">
+          إِنَّ مَعَ الْعُسْرِ يُسْرًا
+        </div>
+
+        <div class="meaning">
+          নিশ্চয়ই কষ্টের সাথে স্বস্তি রয়েছে।
+        </div>
+
+        <div class="reference">
+          — সূরা আশ-শরহ, ৯৪:৬
+        </div>
+      </div>
+
+      <div class="hadithCard">
+        <div class="sectionSub">📜 আজকের হাদিস</div>
+
+        <div class="hadithArabic">
+          إِنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ
+        </div>
+
+        <div class="meaning">
+          কাজসমূহ নিয়তের উপর নির্ভরশীল।
+        </div>
+
+        <div class="reference">
+          সহিহ আল-বুখারি, হাদিস ১
+        </div>
+
+        <div class="row" style="margin-top:13px">
+          <button class="btn" onclick="openHadith('bukhari',1)">
+            হাদিসটি পড়ুন →
+          </button>
+        </div>
+      </div>
+
+      <div class="grid">
+
+        <button class="feature" onclick="showSection('quran')">
+          <div class="featureIcon">📖</div>
+          <strong>কুরআন</strong>
+          <span>১১৪ সূরা ও তিলাওয়াত</span>
+        </button>
+
+        <button class="feature" onclick="showSection('hadith')">
+          <div class="featureIcon">📚</div>
+          <strong>হাদিস</strong>
+          <span>প্রধান হাদিসের কিতাব</span>
+        </button>
+
+        <button class="feature" onclick="showSection('dua')">
+          <div class="featureIcon">🤲</div>
+          <strong>দোয়া</strong>
+          <span>দোয়া ও যিকির</span>
+        </button>
+
+        <button class="feature" onclick="showSection('tasbih')">
+          <div class="featureIcon">📿</div>
+          <strong>তাসবিহ</strong>
+          <span>ডিজিটাল কাউন্টার</span>
+        </button>
+
+        <button class="feature" onclick="showSection('prayer')">
+          <div class="featureIcon">🕌</div>
+          <strong>নামাজের সময়</strong>
+          <span>আজকের সময়সূচি</span>
+        </button>
+
+        <button class="feature" onclick="showSection('stories')">
+          <div class="featureIcon">🌙</div>
+          <strong>হাদিসের গল্প</strong>
+          <span>বিশুদ্ধ সূত্রসহ</span>
+        </button>
+
+      </div>
+    </section>
+
+
+    <!-- QURAN -->
+    <section id="quran" class="section">
+
+      <h2 class="sectionTitle">📖 আল-কুরআন</h2>
+      <p class="sectionSub">সূরা নির্বাচন করুন এবং কুরআন পড়ুন ও শুনুন।</p>
+
+      <select class="select" id="qariSelect">
+        <option>Mishary Rashid Alafasy</option>
+        <option>Yasser Ad-Dussary</option>
+        <option>Abdur-Rahmaan As-Sudais</option>
+        <option>Abdul Basit Abdul Samad</option>
+        <option>Mahmoud Khalil Al-Husary</option>
+        <option>Muhammad Siddiq Al-Minshawi</option>
+        <option>Saad Al-Ghamdi</option>
+        <option>Maher Al-Muaiqly</option>
+        <option>Ahmed Al-Ajmi</option>
+        <option>Hani Ar-Rifai</option>
+        <option>Salah Al-Budair</option>
+        <option>Ali Al-Hudhaify</option>
+        <option>Abu Bakr Ash-Shaatree</option>
+        <option>Muhammad Jibreel</option>
+        <option>Saud Ash-Shuraim</option>
+        <option>Abdullah Awad Al-Juhani</option>
+        <option>Bandar Baleela</option>
+      </select>
+
+      <input class="select" id="surahSearch" placeholder="🔍 সূরার নাম খুঁজুন..." oninput="filterSurah()">
+
+      <div id="surahList" class="surahList"></div>
+
+      <div id="quranReader"></div>
+
+    </section>
+
+
+    <!-- HADITH -->
+    <section id="hadith" class="section">
+
+      <h2 class="sectionTitle">📚 হাদিস লাইব্রেরি</h2>
+      <p class="sectionSub">
+        প্রথমে কিতাব নির্বাচন করুন। তারপর Category/Chapter থেকে হাদিস পড়ুন।
+      </p>
+
+      <div class="bookGrid">
+
+        <button class="book" onclick="selectBook('bukhari')">
+          <div class="bookIcon">📘</div>
+          <strong>সহিহ আল-বুখারি</strong>
+          <span>Sahih Bukhari</span>
+        </button>
+
+        <button class="book" onclick="selectBook('muslim')">
+          <div class="bookIcon">📗</div>
+          <strong>সহিহ মুসলিম</strong>
+          <span>Sahih Muslim</span>
+        </button>
+
+        <button class="book" onclick="selectBook('abudawud')">
+          <div class="bookIcon">📕</div>
+          <strong>সুনান আবু দাউদ</strong>
+          <span>Sunan Abu Dawud</span>
+        </button>
+
+        <button class="book" onclick="selectBook('tirmidhi')">
+          <div class="bookIcon">📙</div>
+          <strong>জামে আত-তিরমিজি</strong>
+          <span>Jami at-Tirmidhi</span>
+        </button>
+
+        <button class="book" onclick="selectBook('nasai')">
+          <div class="bookIcon">📔</div>
+          <strong>সুনান আন-নাসাঈ</strong>
+          <span>Sunan an-Nasa'i</span>
+        </button>
+
+        <button class="book" onclick="selectBook('ibnmajah')">
+          <div class="bookIcon">📓</div>
+          <strong>সুনান ইবন মাজাহ</strong>
+          <span>Sunan Ibn Majah</span>
+        </button>
+
+      </div>
+
+      <div id="hadithBrowser" style="margin-top:20px"></div>
+
+    </section>
+
+
+    <!-- DUA -->
+    <section id="dua" class="section">
+
+      <h2 class="sectionTitle">🤲 দোয়া ও যিকির</h2>
+      <p class="sectionSub">প্রতিদিনের প্রয়োজনীয় দোয়া ও যিকির।</p>
+
+      <div class="duaCard">
+        <div class="reference">সকাল-সন্ধ্যার যিকির</div>
+
+        <div class="duaArabic">
+          سُبْحَانَ اللَّهِ وَبِحَمْدِهِ
+        </div>
+
+        <div class="pronunciation">
+          উচ্চারণ: সুবহানাল্লাহি ওয়া বিহামদিহি।
+        </div>
+
+        <div class="meaning">
+          অর্থ: আল্লাহ পবিত্র এবং সমস্ত প্রশংসা তাঁরই।
+        </div>
+
+        <button class="btn secondary" onclick="copyText('سُبْحَانَ اللَّهِ وَبِحَمْدِهِ')">
+          📋 কপি করুন
+        </button>
+      </div>
+
+      <div class="duaCard">
+        <div class="reference">ক্ষমা প্রার্থনা</div>
+
+        <div class="duaArabic">
+          أَسْتَغْفِرُ اللَّهَ وَأَتُوبُ إِلَيْهِ
+        </div>
+
+        <div class="pronunciation">
+          উচ্চারণ: আসতাগফিরুল্লাহা ওয়া আতুবু ইলাইহি।
+        </div>
+
+        <div class="meaning">
+          অর্থ: আমি আল্লাহর কাছে ক্ষমা চাই এবং তাঁর কাছে তওবা করি।
+        </div>
+
+        <button class="btn secondary" onclick="copyText('أَسْتَغْفِرُ اللَّهَ وَأَتُوبُ إِلَيْهِ')">
+          📋 কপি করুন
+        </button>
+      </div>
+
+      <div class="duaCard">
+        <div class="reference">ঘুমের আগে</div>
+
+        <div class="duaArabic">
+          بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا
+        </div>
+
+        <div class="pronunciation">
+          উচ্চারণ: বিসমিকা আল্লাহুম্মা আমুতু ওয়া আহইয়া।
+        </div>
+
+        <div class="meaning">
+          অর্থ: হে আল্লাহ! আপনার নামেই আমি মৃত্যুবরণ করি এবং জীবিত হই।
+        </div>
+      </div>
+
+      <div class="aboutCard">
+        <strong>ℹ️ গুরুত্বপূর্ণ</strong>
+        <p class="meaning" style="margin-top:8px">
+          পূর্ণ Hisnul Muslim অংশে নির্ভরযোগ্য উৎস থেকে দোয়া,
+          আরবি, বাংলা উচ্চারণ, অর্থ ও রেফারেন্স যোগ করা হবে।
+        </p>
+      </div>
+
+    </section>
+
+
+    <!-- TASBIH -->
+    <section id="tasbih" class="section">
+
+      <h2 class="sectionTitle">📿 ডিজিটাল তাসবিহ</h2>
+      <p class="sectionSub">যিকির নির্বাচন করুন এবং কাউন্ট করতে ট্যাপ করুন।</p>
+
+      <div class="tasbihBox">
+
+        <select id="dhikrSelect" class="dhikrSelect" onchange="changeDhikr()">
+          <option>سُبْحَانَ اللَّهِ — সুবহানাল্লাহ</option>
+          <option>الْحَمْدُ لِلَّهِ — আলহামদুলিল্লাহ</option>
+          <option>اللَّهُ أَكْبَرُ — আল্লাহু আকবার</option>
+          <option>أَسْتَغْفِرُ اللَّهَ — আসতাগফিরুল্লাহ</option>
+          <option>لَا إِلَٰهَ إِلَّا اللَّهُ — লা ইলাহা ইল্লাল্লাহ</option>
+        </select>
+
+        <div class="count" id="count">0</div>
+
+        <button class="tasbihButton" onclick="incrementTasbih()">
+          যিকির করুন
+        </button>
+
+        <div class="row" style="justify-content:center;margin-top:25px">
+          <button class="btn gold" onclick="resetTasbih()">↻ Reset</button>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- PRAYER -->
+    <section id="prayer" class="section">
+
+      <h2 class="sectionTitle">🕌 নামাজের সময়</h2>
+      <p class="sectionSub">
+        শহর নির্বাচন করে আজকের নামাজের সময় দেখুন।
+      </p>
+
+      <select class="select" id="citySelect" onchange="loadPrayerTimes()">
+        <option value="dhaka">ঢাকা</option>
+        <option value="dinajpur">দিনাজপুর</option>
+        <option value="chittagong">চট্টগ্রাম</option>
+        <option value="sylhet">সিলেট</option>
+        <option value="rajshahi">রাজশাহী</option>
+        <option value="khulna">খুলনা</option>
+      </select>
+
+      <div id="prayerList"></div>
+
+      <div class="aboutCard">
+        <strong>🌙 তাহাজ্জুদ</strong>
+        <p class="meaning" style="margin-top:8px">
+          তাহাজ্জুদের সময় এশার পর থেকে ফজরের আগ পর্যন্ত।
+          উত্তম সময় রাতের শেষ এক-তৃতীয়াংশ।
+        </p>
+      </div>
+
+    </section>
+
+
+    <!-- STORIES -->
+    <section id="stories" class="section">
+
+      <h2 class="sectionTitle">🌙 হাদিসের গল্প</h2>
+      <p class="sectionSub">
+        সহিহ হাদিসে বর্ণিত ঘটনা ও শিক্ষা।
+      </p>
+
+      <div class="storyCard">
+        <div class="storyTitle">🪨 গুহায় আটকে পড়া তিন ব্যক্তি</div>
+
+        <p class="storyText">
+          তিন ব্যক্তি একটি গুহায় প্রবেশ করার পর একটি বড় পাথর গুহার মুখ বন্ধ করে দেয়।
+          তারা নিজেদের করা নেক আমলের মাধ্যমে আল্লাহর কাছে দোয়া করতে থাকে।
+          আল্লাহ তাদের বিপদ দূর করে দেন।
+        </p>
+
+        <div class="reference">
+          সহিহ আল-বুখারি: ২২৭২<br>
+          সহিহ মুসলিম: ২৭৪৩<br>
+          গ্রেড: সহিহ
+        </div>
+      </div>
+
+      <div class="storyCard">
+        <div class="storyTitle">🐕 তৃষ্ণার্ত কুকুরকে পানি পান করানো</div>
+
+        <p class="storyText">
+          একজন ব্যক্তি একটি তৃষ্ণার্ত কুকুরকে পানি পান করান।
+          এই দয়ার কারণে আল্লাহ তাকে ক্ষমা করে দেন।
+        </p>
+
+        <div class="reference">
+          সহিহ আল-বুখারি: ২৩৬৩<br>
+          সহিহ মুসলিম: ২২৪৪<br>
+          গ্রেড: সহিহ
+        </div>
+      </div>
+
+      <div class="storyCard">
+        <div class="storyTitle">🤲 একশত মানুষ হত্যাকারীর তওবা</div>
+
+        <p class="storyText">
+          এক ব্যক্তি একশত মানুষ হত্যা করার পর সত্যিকারভাবে তওবা করতে চায়।
+          তাকে আল্লাহর দিকে ফিরে আসার পথ দেখানো হয় এবং সে তওবার উদ্দেশ্যে রওনা হয়।
+        </p>
+
+        <div class="reference">
+          সহিহ আল-বুখারি: ৩৪৭০<br>
+          সহিহ মুসলিম: ২৭৬৬<br>
+          গ্রেড: সহিহ
+        </div>
+      </div>
+
+    </section>
+
+
+    <!-- MORE -->
+    <section id="more" class="section">
+
+      <h2 class="sectionTitle">⋮ আরও</h2>
+      <p class="sectionSub">Daily Quran And Hadith-এর আরও সুবিধা।</p>
+
+      <div class="menu">
+
+        <button class="menuItem" onclick="showSection('prayer')">
+          <div class="mi">🕌</div>
+          <div>
+            <strong>নামাজের সময়</strong>
+            <span>ফজর থেকে এশা ও তাহাজ্জুদ</span>
+          </div>
+        </button>
+
+        <button class="menuItem" onclick="showSection('tasbih')">
+          <div class="mi">📿</div>
+          <div>
+            <strong>ডিজিটাল তাসবিহ</strong>
+            <span>যিকির গণনা করুন</span>
+          </div>
+        </button>
+
+        <button class="menuItem" onclick="showSection('stories')">
+          <div class="mi">🌙</div>
+          <div>
+            <strong>হাদিসের গল্প</strong>
+            <span>সহিহ সূত্রসহ</span>
+          </div>
+        </button>
+
+        <button class="menuItem" onclick="showSadaqah()">
+          <div class="mi">🤲</div>
+          <div>
+            <strong>সদকা</strong>
+            <span>সদকার মাধ্যমে সহযোগিতা করুন</span>
+          </div>
+        </button>
+
+        <button class="menuItem" onclick="showAbout()">
+          <div class="mi">ℹ️</div>
+          <div>
+            <strong>অ্যাপ সম্পর্কে</strong>
+            <span>Daily Quran And Hadith কেন তৈরি</span>
+          </div>
+        </button>
+
+        <button class="menuItem" onclick="shareApp()">
+          <div class="mi">📤</div>
+          <div>
+            <strong>শেয়ার করুন</strong>
+            <span>অন্যদের কাছে পৌঁছে দিন</span>
+          </div>
+        </button>
+
+      </div>
+
+      <div id="moreContent"></div>
+
+    </section>
+
+  </main>
+
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottomNav">
+
+    <button class="navBtn active" data-section="home" onclick="showSection('home')">
+      <div class="navIcon">⌂</div>
+      <span>Home</span>
+    </button>
+
+    <button class="navBtn" data-section="quran" onclick="showSection('quran')">
+      <div class="navIcon">📖</div>
+      <span>Quran</span>
+    </button>
+
+    <button class="navBtn" data-section="hadith" onclick="showSection('hadith')">
+      <div class="navIcon">📚</div>
+      <span>Hadith</span>
+    </button>
+
+    <button class="navBtn" data-section="dua" onclick="showSection('dua')">
+      <div class="navIcon">🤲</div>
+      <span>Dua</span>
+    </button>
+
+    <button class="navBtn" data-section="more" onclick="showSection('more')">
+      <div class="navIcon">⋮</div>
+      <span>More</span>
+    </button>
+
+  </nav>
+
+</div>
+
+<div id="toast"></div>
+
+
+<script>
+
+  /* =========================
+     NAVIGATION
+  ========================= */
+
+  function showSection(id){
+
+    document.querySelectorAll(".section").forEach(s=>{
+      s.classList.remove("active");
+    });
+
+    const section=document.getElementById(id);
+
+    if(section){
+      section.classList.add("active");
+    }
+
+    document.querySelectorAll(".navBtn").forEach(btn=>{
+      btn.classList.remove("active");
+
+      if(btn.dataset.section===id){
+        btn.classList.add("active");
+      }
+    });
+
+    window.scrollTo({
+      top:0,
+      behavior:"smooth"
+    });
+
+    if(id==="quran" && !quranLoaded){
+      loadSurahs();
+    }
+
+    if(id==="prayer"){
+      loadPrayerTimes();
+    }
+  }
+
+
+  /* =========================
+     TOAST
+  ========================= */
+
+  function toast(message){
+
+    const el=document.getElementById("toast");
+
+    el.textContent=message;
+    el.classList.add("show");
+
+    setTimeout(()=>{
+      el.classList.remove("show");
+    },2200);
+  }
+
+
+  /* =========================
+     QURAN
+  ========================= */
+
+  let quranLoaded=false;
+
+  const surahs=[
+    ["1","আল-ফাতিহা","الفاتحة"],
+    ["2","আল-বাকারা","البقرة"],
+    ["3","আলে ইমরান","آل عمران"],
+    ["4","আন-নিসা","النساء"],
+    ["5","আল-মায়িদাহ","المائدة"],
+    ["6","আল-আনআম","الأنعام"],
+    ["7","আল-আরাফ","الأعراف"],
+    ["8","আল-আনফাল","الأنفال"],
+    ["9","আত-তাওবাহ","التوبة"],
+    ["10","ইউনুস","يونس"],
+    ["11","হুদ","هود"],
+    ["12","ইউসুফ","يوسف"],
+    ["13","আর-রাদ","الرعد"],
+    ["14","ইবরাহিম","إبراهيم"],
+    ["15","আল-হিজর","الحجر"],
+    ["16","আন-নাহল","النحل"],
+    ["17","আল-ইসরা","الإسراء"],
+    ["18","আল-কাহফ","الكهف"],
+    ["19","মারইয়াম","مريم"],
+    ["20","ত্ব-হা","طه"],
+    ["21","আল-আম্বিয়া","الأنبياء"],
+    ["22","আল-হজ","الحج"],
+    ["23","আল-মুমিনুন","المؤمنون"],
+    ["24","আন-নূর","النور"],
+    ["25","আল-ফুরকান","الفرقان"],
+    ["26","আশ-শুআরা","الشعراء"],
+    ["27","আন-নামল","النمل"],
+    ["28","আল-কাসাস","القصص"],
+    ["29","আল-আনকাবুত","العنكبوت"],
+    ["30","আর-রূম","الروم"],
+    ["31","লুকমান","لقمان"],
+    ["32","আস-সাজদাহ","السجدة"],
+    ["33","আল-আহযাব","الأحزاب"],
+    ["34","সাবা","سبأ"],
+    ["35","ফাতির","فاطر"],
+    ["36","ইয়াসিন","يس"],
+    ["37","আস-সাফফাত","الصافات"],
+    ["38","সাদ","ص"],
+    ["39","আয-যুমার","الزمر"],
+    ["40","গাফির","غافر"],
+    ["41","ফুসসিলাত","فصلت"],
+    ["42","আশ-শূরা","الشورى"],
+    ["43","আয-যুখরুফ","الزخرف"],
+    ["44","আদ-দুখান","الدخان"],
+    ["45","আল-জাসিয়াহ","الجاثية"],
+    ["46","আল-আহকাফ","الأحقاف"],
+    ["47","মুহাম্মদ","محمد"],
+    ["48","আল-ফাতহ","الفتح"],
+    ["49","আল-হুজুরাত","الحجرات"],
+    ["50","কাফ","ق"],
+    ["51","আয-যারিয়াত","الذاريات"],
+    ["52","আত-তূর","الطور"],
+    ["53","আন-নাজম","النجم"],
+    ["54","আল-কামার","القمر"],
+    ["55","আর-রহমান","الرحمن"],
+    ["56","আল-ওয়াকিয়াহ","الواقعة"],
+    ["57","আল-হাদিদ","الحديد"],
+    ["58","আল-মুজাদালাহ","المجادلة"],
+    ["59","আল-হাশর","الحشر"],
+    ["60","আল-মুমতাহিনাহ","الممتحنة"],
+    ["61","আস-সাফ","الصف"],
+    ["62","আল-জুমুআহ","الجمعة"],
+    ["63","আল-মুনাফিকুন","المنافقون"],
+    ["64","আত-তাগাবুন","التغابن"],
+    ["65","আত-তালাক","الطلاق"],
+    ["66","আত-তাহরিম","التحريم"],
+    ["67","আল-মুলক","الملك"],
+    ["68","আল-কলম","القلم"],
+    ["69","আল-হাক্কাহ","الحاقة"],
+    ["70","আল-মাআরিজ","المعارج"],
+    ["71","নূহ","نوح"],
+    ["72","আল-জিন","الجن"],
+    ["73","আল-মুযযাম্মিল","المزمل"],
+    ["74","আল-মুদ্দাসসির","المدثر"],
+    ["75","আল-কিয়ামাহ","القيامة"],
+    ["76","আল-ইনসান","الإنسان"],
+    ["77","আল-মুরসালাত","المرسلات"],
+    ["78","আন-নাবা","النبأ"],
+    ["79","আন-নাযিয়াত","النازعات"],
+    ["80","আবাসা","عبس"],
+    ["81","আত-তাকভির","التكوير"],
+    ["82","আল-ইনফিতার","الانفطار"],
+    ["83","আল-মুতাফফিফিন","المطففين"],
+    ["84","আল-ইনশিকাক","الانشقاق"],
+    ["85","আল-বুরুজ","البروج"],
+    ["86","আত-তারিক","الطارق"],
+    ["87","আল-আলা","الأعلى"],
+    ["88","আল-গাশিয়াহ","الغاشية"],
+    ["89","আল-ফজর","الفجر"],
+    ["90","আল-বালাদ","البلد"],
+    ["91","আশ-শামস","الشمس"],
+    ["92","আল-লাইল","الليل"],
+    ["93","আদ-দুহা","الضحى"],
+    ["94","আশ-শরহ","الشرح"],
+    ["95","আত-তিন","التين"],
+    ["96","আল-আলাক","العلق"],
+    ["97","আল-কদর","القدر"],
+    ["98","আল-বাইয়্যিনাহ","البينة"],
+    ["99","আয-যিলযাল","الزلزلة"],
+    ["100","আল-আদিয়াত","العاديات"],
+    ["101","আল-কারিয়াহ","القارعة"],
+    ["102","আত-তাকাসুর","التكاثر"],
+    ["103","আল-আসর","العصر"],
+    ["104","আল-হুমাযাহ","الهمزة"],
+    ["105","আল-ফিল","الفيل"],
+    ["106","কুরাইশ","قريش"],
+    ["107","আল-মাউন","الماعون"],
+    ["108","আল-কাওসার","الكوثر"],
+    ["109","আল-কাফিরুন","الكافرون"],
+    ["110","আন-নাসর","النصر"],
+    ["111","আল-মাসাদ","المسد"],
+    ["112","আল-ইখলাস","الإخلاص"],
+    ["113","আল-ফালাক","الفلق"],
+    ["114","আন-নাস","الناس"]
+  ];
+
+
+  function loadSurahs(){
+
+    const list=document.getElementById("surahList");
+
+    list.innerHTML="";
+
+    surahs.forEach(s=>{
+
+      const div=document.createElement("button");
+
+      div.className="surah";
+
+      div.innerHTML=`
+        <div class="surahNo">${s[0]}</div>
+
+        <div class="surahInfo">
+          <strong>${s[1]}</strong>
+          <span>সূরা ${s[0]}</span>
+        </div>
+
+        <div class="surahArabic">${s[2]}</div>
+      `;
+
+      div.onclick=()=>openSurah(Number(s[0]),s[1]);
+
+      list.appendChild(div);
+    });
+
+    quranLoaded=true;
+  }
+
+
+  function filterSurah(){
+
+    const q=document.getElementById("surahSearch").value.toLowerCase();
+
+    document.querySelectorAll(".surah").forEach((el,index)=>{
+
+      const item=surahs[index];
+
+      el.style.display=
+        item[1].toLowerCase().includes(q) ||
+        item[2].includes(q) ||
+        item[0]===q
+        ? "flex"
+        : "none";
+    });
+  }
+
+
+  async function openSurah(number,name){
+
+    const reader=document.getElementById("quranReader");
+
+    reader.innerHTML=`
+      <div class="ayahCard">
+        <strong>${name}</strong>
+        <p class="sectionSub">লোড হচ্ছে...</p>
+      </div>
+    `;
+
+    try{
+
+      const [ar,bn]=await Promise.all([
+        fetch(`https://api.alquran.cloud/v1/surah/${number}/quran-uthmani`).then(r=>r.json()),
+        fetch(`https://api.alquran.cloud/v1/surah/${number}/bn.bengali`).then(r=>r.json())
+      ]);
+
+      if(ar.code!==200 || bn.code!==200){
+        throw new Error();
+      }
+
+      const arabic=ar.data.ayahs;
+      const bangla=bn.data.ayahs;
+
+      reader.innerHTML=`
+        <div class="ayahCard">
+          <h3>${name}</h3>
+          <p class="sectionSub">সূরা ${number}</p>
+          <button class="btn secondary" onclick="document.getElementById('surahList').scrollIntoView({behavior:'smooth'})">
+            ← সূরার তালিকা
+          </button>
+        </div>
+      `;
+
+      arabic.forEach((a,i)=>{
+
+        const card=document.createElement("div");
+
+        card.className="ayah";
+
+        card.innerHTML=`
+          <div class="ayahTop">
+            <span class="ayahNumber">আয়াত ${a.numberInSurah}</span>
+
+            <button class="audioBtn"
+              onclick="playAyah(${number},${a.numberInSurah})">
+              ▶
+            </button>
+          </div>
+
+          <div class="arabic">${a.text}</div>
+
+          <div class="meaning">
+            ${bangla[i] ? bangla[i].text : ""}
+          </div>
+
+          <div class="reference">
+            সূরা ${number}, আয়াত ${a.numberInSurah}
+          </div>
+        `;
+
+        reader.appendChild(card);
+      });
+
+      reader.scrollIntoView({
+        behavior:"smooth"
+      });
+
+    }catch(error){
+
+      reader.innerHTML=`
+        <div class="aboutCard">
+          <strong>⚠️ কুরআন লোড করা যাচ্ছে না</strong>
+          <p class="meaning" style="margin-top:8px">
+            ইন্টারনেট সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।
+          </p>
+        </div>
+      `;
+    }
+  }
+
+
+  function playAyah(surah,ayah){
+
+    const audioUrl=
+      `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${surah}/${ayah}`;
+
+    const audio=new Audio(audioUrl);
+
+    audio.play()
+      .then(()=>toast("▶ আয়াতের অডিও চলছে"))
+      .catch(()=>{
+        toast("অডিও চালু করা যায়নি");
+      });
+  }
+
+
+  /* =========================
+     HADITH API
+  ========================= */
+
+  const HADITH_API=
+    "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1";
+
+  const hadithBooks={
+    bukhari:{
+      name:"সহিহ আল-বুখারি",
+      edition:"ben-bukhari"
+    },
+    muslim:{
+      name:"সহিহ মুসলিম",
+      edition:"ben-muslim"
+    },
+    abudawud:{
+      name:"সুনান আবু দাউদ",
+      edition:"ben-abudawud"
+    },
+    tirmidhi:{
+      name:"জামে আত-তিরমিজি",
+      edition:"ben-tirmidhi"
+    },
+    nasai:{
+      name:"সুনান আন-নাসাঈ",
+      edition:"ben-nasai"
+    },
+    ibnmajah:{
+      name:"সুনান ইবন মাজাহ",
+      edition:"ben-ibnmajah"
+    }
+  };
+
+
+  function selectBook(book){
+
+    const info=hadithBooks[book];
+
+    const box=document.getElementById("hadithBrowser");
+
+    box.innerHTML=`
+
+      <div class="aboutCard">
+
+        <h3>${info.name}</h3>
+
+        <p class="sectionSub">
+          Category/Chapter এবং হাদিস নম্বর ব্যবহার করে খুঁজুন।
+        </p>
+
+        <input
+          id="hadithNumber"
+          class="select"
+          type="number"
+          min="1"
+          placeholder="হাদিস নম্বর লিখুন">
+
+        <div class="row">
+
+          <button
+            class="btn"
+            onclick="loadHadith('${book}')">
+            হাদিস দেখুন
+          </button>
+
+          <button
+            class="btn secondary"
+            onclick="loadSections('${book}')">
+            📂 Category / Chapter
+          </button>
+
+        </div>
+
+      </div>
+
+      <div id="hadithResult"></div>
+
+    `;
+
+    box.scrollIntoView({
+      behavior:"smooth"
+    });
+  }
+
+
+  async function loadHadith(book){
+
+    const number=
+      document.getElementById("hadithNumber").value;
+
+    if(!number){
+      toast("হাদিস নম্বর লিখুন");
+      return;
+    }
+
+    await openHadith(book,number);
+  }
+
+
+  async function openHadith(book,number){
+
+    showSection("hadith");
+
+    const box=document.getElementById("hadithBrowser");
+
+    if(!box.innerHTML){
+      selectBook(book);
+    }
+
+    const result=document.getElementById("hadithResult");
+
+    result.innerHTML=`
+      <div class="aboutCard">
+        ⏳ হাদিস লোড হচ্ছে...
+      </div>
+    `;
+
+    try{
+
+      const edition=hadithBooks[book].edition;
+
+      const response=
+        await fetch(`${HADITH_API}/editions/${edition}/${number}`);
+
+      const data=await response.json();
+
+      const h=data.hadiths && data.hadiths[0];
+
+      if(!h){
+        throw new Error();
+      }
+
+      result.innerHTML=`
+
+        <div class="hadithCard">
+
+          <div class="sectionSub">
+            ${hadithBooks[book].name}
+          </div>
+
+          <div class="hadithArabic">
+            ${h.text || ""}
+          </div>
+
+          <div class="reference">
+            হাদিস নম্বর: ${number}
+          </div>
+
+          <div class="grade">
+            রেফারেন্স: ${hadithBooks[book].name}, ${number}
+          </div>
+
+        </div>
+
+      `;
+
+    }catch(error){
+
+      result.innerHTML=`
+        <div class="aboutCard">
+          <strong>⚠️ হাদিস পাওয়া যায়নি</strong>
+          <p class="meaning" style="margin-top:8px">
+            নম্বরটি পরীক্ষা করুন অথবা কিছুক্ষণ পর আবার চেষ্টা করুন।
+          </p>
+        </div>
+      `;
+    }
+  }
+
+
+  async function loadSections(book){
+
+    const result=document.getElementById("hadithResult");
+
+    result.innerHTML=`
+      <div class="aboutCard">
+        ⏳ Chapter লোড হচ্ছে...
+      </div>
+    `;
+
+    try{
+
+      const edition=hadithBooks[book].edition;
+
+      const response=
+        await fetch(`${HADITH_API}/editions/${edition}/sections`);
+
+      const data=await response.json();
+
+      if(!data.sections){
+        throw new Error();
+      }
+
+      let html=`
+        <div class="aboutCard">
+          <strong>📂 ${hadithBooks[book].name} — Chapters</strong>
+        </div>
+      `;
+
+      Object.entries(data.sections).forEach(([key,value])=>{
+
+        html+=`
+          <button
+            class="menuItem"
+            style="margin-bottom:9px"
+            onclick="openSection('${book}','${key}')">
+
+            <div class="mi">📖</div>
+
+            <div>
+              <strong>Chapter ${key}</strong>
+              <span>${value}</span>
+            </div>
+
+          </button>
+        `;
+      });
+
+      result.innerHTML=html;
+
+    }catch(error){
+
+      result.innerHTML=`
+        <div class="aboutCard">
+          <strong>Chapter data পাওয়া যায়নি</strong>
+          <p class="meaning">
+            এই কিতাবের chapter data API-তে পাওয়া না গেলে
+            হাদিস নম্বর দিয়ে সরাসরি search ব্যবহার করুন।
+          </p>
+        </div>
+      `;
+    }
+  }
+
+
+  async function openSection(book,section){
+
+    const result=document.getElementById("hadithResult");
+
+    result.innerHTML=`
+      <div class="aboutCard">⏳ হাদিসগুলো লোড হচ্ছে...</div>
+    `;
+
+    try{
+
+      const edition=hadithBooks[book].edition;
+
+      const response=
+        await fetch(
+          `${HADITH_API}/editions/${edition}/sections/${section}`
+        );
+
+      const data=await response.json();
+
+      if(!data.hadiths){
+        throw new Error();
+      }
+
+      let html=`
+        <div class="aboutCard">
+          <strong>${hadithBooks[book].name}</strong>
+          <p class="sectionSub">Chapter ${section}</p>
+        </div>
+      `;
+
+      data.hadiths.forEach(h=>{
+
+        html+=`
+          <div class="hadithCard">
+
+            <div class="hadithArabic">
+              ${h.text || ""}
+            </div>
+
+            <div class="reference">
+              হাদিস নম্বর: ${h.hadithnumber || ""}
+            </div>
+
+          </div>
+        `;
+      });
+
+      result.innerHTML=html;
+
+    }catch(error){
+
+      result.innerHTML=`
+        <div class="aboutCard">
+          Chapter-এর হাদিস লোড করা যাচ্ছে না।
+        </div>
+      `;
+    }
+  }
+
+
+  /* =========================
+     TASBIH
+  ========================= */
+
+  let tasbihCount=0;
+
+  function incrementTasbih(){
+
+    tasbihCount++;
+
+    document.getElementById("count").textContent=
+      tasbihCount;
+
+    if(navigator.vibrate){
+      navigator.vibrate(20);
+    }
+  }
+
+
+  function resetTasbih(){
+
+    tasbihCount=0;
+
+    document.getElementById("count").textContent="0";
+
+    toast("তাসবিহ রিসেট হয়েছে");
+  }
+
+
+  function changeDhikr(){
+
+    resetTasbih();
+
+    toast("নতুন যিকির নির্বাচন করা হয়েছে");
+  }
+
+
+  /* =========================
+     PRAYER
+  ========================= */
+
+  const prayerData={
+
+    dhaka:{
+      fajr:"04:15",
+      sunrise:"05:30",
+      dhuhr:"12:05",
+      asr:"16:35",
+      maghrib:"18:25",
+      isha:"19:40"
+    },
+
+    dinajpur:{
+      fajr:"04:20",
+      sunrise:"05:35",
+      dhuhr:"12:10",
+      asr:"16:40",
+      maghrib:"18:30",
+      isha:"19:45"
+    },
+
+    chittagong:{
+      fajr:"04:10",
+      sunrise:"05:25",
+      dhuhr:"12:00",
+      asr:"16:30",
+      maghrib:"18:20",
+      isha:"19:35"
+    },
+
+    sylhet:{
+      fajr:"04:10",
+      sunrise:"05:25",
+      dhuhr:"12:00",
+      asr:"16:30",
+      maghrib:"18:20",
+      isha:"19:35"
+    },
+
+    rajshahi:{
+      fajr:"04:20",
+      sunrise:"05:35",
+      dhuhr:"12:10",
+      asr:"16:40",
+      maghrib:"18:30",
+      isha:"19:45"
+    },
+
+    khulna:{
+      fajr:"04:20",
+      sunrise:"05:35",
+      dhuhr:"12:05",
+      asr:"16:35",
+      maghrib:"18:25",
+      isha:"19:40"
+    }
+
+  };
+
+
+  function loadPrayerTimes(){
+
+    const city=
+      document.getElementById("citySelect").value;
+
+    const p=prayerData[city];
+
+    const names=[
+      ["ফজর","الفجر",p.fajr],
+      ["সূর্যোদয়","الشروق",p.sunrise],
+      ["যোহর","الظهر",p.dhuhr],
+      ["আসর","العصر",p.asr],
+      ["মাগরিব","المغرب",p.maghrib],
+      ["এশা","العشاء",p.isha]
+    ];
+
+    document.getElementById("prayerList").innerHTML=
+      names.map(x=>`
+
+        <div class="prayerCard">
+
+          <div>
+            <div class="prayerName">${x[0]}</div>
+            <div class="prayerArabic">${x[1]}</div>
+          </div>
+
+          <div class="time">${x[2]}</div>
+
+        </div>
+
+      `).join("");
+  }
+
+
+  /* =========================
+     SADAQAH
+  ========================= */
+
+  function showSadaqah(){
+
+    showSection("more");
+
+    document.getElementById("moreContent").innerHTML=`
+
+      <div class="aboutCard sadaqah" style="margin-top:18px">
+
+        <h3>🤲 সদকা</h3>
+
+        <p class="meaning" style="margin-top:8px">
+          আপনার সদকা একটি ভালো কাজে সহযোগিতা করতে পারে।
+          অর্থ পাঠানোর আগে নম্বর ও উদ্দেশ্য অবশ্যই যাচাই করুন।
+        </p>
+
+        <div class="number">
+          এখানে bKash / Nagad নম্বর দেওয়া হবে
+        </div>
+
+        <div class="row">
+
+          <button class="btn gold"
+            onclick="toast('পেমেন্ট নম্বর এখনো যোগ করা হয়নি')">
+            📋 নম্বর কপি
+          </button>
+
+        </div>
+
+      </div>
+    `;
+  }
+
+
+  /* =========================
+     ABOUT
+  ========================= */
+
+  function showAbout(){
+
+    showSection("more");
+
+    document.getElementById("moreContent").innerHTML=`
+
+      <div class="aboutCard" style="margin-top:18px">
+
+        <h3>🌙 Daily Quran And Hadith</h3>
+
+        <p class="meaning" style="margin-top:12px">
+
+          <strong>এই অ্যাপটি কেন তৈরি করা হয়েছে?</strong><br><br>
+
+          Daily Quran And Hadith-এর উদ্দেশ্য হলো কুরআন,
+          সহিহ হাদিস, দোয়া, যিকির এবং প্রয়োজনীয় ইসলামী
+          জ্ঞানকে মানুষের জন্য সহজ ও সুন্দরভাবে এক জায়গায়
+          পৌঁছে দেওয়া।
+
+          <br><br>
+
+          আমরা চাই একজন মানুষ অ্যাপটি খুললেই যেন
+          কুরআন পড়তে, হাদিস জানতে এবং ভালো আমল করতে
+          আগ্রহ অনুভব করেন।
+
+          <br><br>
+
+          আল্লাহ আমাদের এই ছোট প্রচেষ্টাকে কবুল করুন
+          এবং মানুষের জন্য উপকারী করে দিন। আমিন।
+        </p>
+
+      </div>
+    `;
+  }
+
+
+  /* =========================
+     COPY
+  ========================= */
+
+  function copyText(text){
+
+    navigator.clipboard.writeText(text)
+      .then(()=>{
+        toast("কপি হয়েছে ✓");
+      })
+      .catch(()=>{
+        toast("কপি করা যায়নি");
+      });
+  }
+
+
+  /* =========================
+     SHARE
+  ========================= */
+
+  function shareApp(){
+
+    const shareData={
+      title:"Daily Quran And Hadith",
+      text:"কুরআন, হাদিস, দোয়া ও যিকিরের জন্য Daily Quran And Hadith ব্যবহার করুন।",
+      url:window.location.href
+    };
+
+    if(navigator.share){
+
+      navigator.share(shareData);
+
+    }else{
+
+      copyText(window.location.href);
+
+      toast("অ্যাপের লিংক কপি হয়েছে");
+    }
+  }
+
+
+  /* =========================
+     GLOBAL SEARCH
+  ========================= */
+
+  function globalSearch(){
+
+    const value=
+      document.getElementById("globalSearch").value.trim();
+
+    if(value.length<2){
+      return;
+    }
+
+    const match=surahs.find(s=>
+      s[1].includes(value) ||
+      s[2].includes(value) ||
+      s[0]===value
+    );
+
+    if(match){
+
+      showSection("quran");
+
+      document.getElementById("surahSearch").value=value;
+
+      filterSurah();
+
+      toast("সূরা পাওয়া গেছে");
+
+    }
+
+  }
+
+
+  /* =========================
+     START
+  ========================= */
+
+  loadSurahs();
+  loadPrayerTimes();
+
+</script>
+
+</body>
+</html>
